@@ -12,28 +12,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="52dp"
-        android:layout_marginBottom="4dp">
+        android:layout_marginEnd="52dp">
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonBack"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:backgroundTint="@color/white"
-            android:stateListAnimator="@null"
-            app:icon="@drawable/ic_arrow_back"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:iconTint="@color/black" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:background="@drawable/ic_arrow_back"
+            android:backgroundTint="@color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingStart="12dp"
-            android:paddingTop="12dp"
+            android:paddingTop="10dp"
             android:paddingEnd="86dp"
             android:paddingBottom="12dp"
             android:text="@string/setting"
@@ -44,79 +40,55 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="24dp">
-    <Switch
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="21dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="21dp"
-        android:switchTextAppearance="@style/TextAppearance.AppCompat.Small"
-        android:text="@string/dark_theme"
-        android:textSize="@dimen/text_size_regular"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        android:layout_marginTop="24dp"
+        android:orientation="vertical">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:drawableEnd="@drawable/ic_share"
-        android:drawableTint="@color/grey"
-        android:gravity="center_vertical"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="21dp"
-        android:paddingBottom="21dp"
-        android:stateListAnimator="@null"
-        android:text="@string/share"
-        android:textAllCaps="false"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_regular" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/vertical_indent_the_button_on_screen_the_settings"
+            android:paddingStart="@dimen/left_margin_the_screen"
+            android:paddingEnd="@dimen/icon_padding"
+            android:switchTextAppearance="@style/TextAppearance.AppCompat.Small"
+            android:text="@string/dark_theme"
+            android:textSize="@dimen/text_size_regular" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:drawableEnd="@drawable/ic_support"
-        android:drawableTint="@color/grey"
-        android:gravity="center_vertical"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="21dp"
-        android:paddingBottom="21dp"
-        android:stateListAnimator="@null"
-        android:text="@string/support"
-        android:textAllCaps="false"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/black"
-        android:textSize="16sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/vertical_indent_the_button_on_screen_the_settings"
+            android:layout_marginStart="@dimen/left_margin_the_screen"
+            android:layout_marginEnd="@dimen/right_margin_the_screen_setting"
+            android:drawablePadding="@dimen/icon_padding"
+            android:text="@string/share"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_regular"
+            app:drawableRightCompat="@drawable/ic_share" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:drawableEnd="@drawable/ic_arrow_forward"
-        android:drawableTint="@color/grey"
-        android:gravity="center_vertical"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="21dp"
-        android:paddingBottom="21dp"
-        android:stateListAnimator="@null"
-        android:text="@string/user_agreement"
-        android:textAllCaps="false"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_regular" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/vertical_indent_the_button_on_screen_the_settings"
+            android:layout_marginStart="@dimen/left_margin_the_screen"
+            android:layout_marginEnd="@dimen/right_margin_the_screen_setting"
+            android:drawablePadding="@dimen/icon_padding"
+            android:text="@string/support"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_regular"
+            app:drawableRightCompat="@drawable/ic_support" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/vertical_indent_the_button_on_screen_the_settings"
+            android:layout_marginStart="@dimen/left_margin_the_screen"
+            android:layout_marginEnd="@dimen/right_margin_the_screen_setting"
+            android:drawablePadding="@dimen/icon_padding"
+            android:text="@string/user_agreement"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_regular"
+            app:drawableRightCompat="@drawable/ic_arrow_forward" />
+
     </LinearLayout>
 
 </LinearLayout>
