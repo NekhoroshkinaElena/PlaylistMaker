@@ -4,7 +4,6 @@
     <dimen name="text_size_regular">16sp</dimen>
     <dimen name="icon_padding">8dp</dimen>
     <dimen name="button_radius">16dp</dimen>
-    <dimen name="zero_value">0dp</dimen>
     <dimen name="vertical_indent_the_button_on_screen_the_settings">24dp</dimen>
     <dimen name="bottom_indent_the_button_on_screen_main">16dp</dimen>
     <dimen name="left_margin_the_screen">16dp</dimen>
