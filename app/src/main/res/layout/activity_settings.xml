@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:stateListAnimator="@null"
+    tools:context=".SettingsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="52dp">
+
+        <ImageButton
+            android:id="@+id/buttonBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:background="@drawable/ic_arrow_back"
+            android:backgroundTint="@color/black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="12dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="86dp"
+            android:paddingBottom="12dp"
+            android:text="@string/setting"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_title" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/vertical_indent_the_button_on_screen_the_settings"
+            android:paddingStart="@dimen/left_margin_the_screen"
+            android:paddingEnd="@dimen/icon_padding"
+            android:switchTextAppearance="@style/TextAppearance.AppCompat.Small"
+            android:text="@string/dark_theme"
+            android:textSize="@dimen/text_size_regular" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/vertical_indent_the_button_on_screen_the_settings"
+            android:layout_marginStart="@dimen/left_margin_the_screen"
+            android:layout_marginEnd="@dimen/right_margin_the_screen_setting"
+            android:drawablePadding="@dimen/icon_padding"
+            android:text="@string/share"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_regular"
+            app:drawableRightCompat="@drawable/ic_share" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/vertical_indent_the_button_on_screen_the_settings"
+            android:layout_marginStart="@dimen/left_margin_the_screen"
+            android:layout_marginEnd="@dimen/right_margin_the_screen_setting"
+            android:drawablePadding="@dimen/icon_padding"
+            android:text="@string/support"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_regular"
+            app:drawableRightCompat="@drawable/ic_support" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/vertical_indent_the_button_on_screen_the_settings"
+            android:layout_marginStart="@dimen/left_margin_the_screen"
+            android:layout_marginEnd="@dimen/right_margin_the_screen_setting"
+            android:drawablePadding="@dimen/icon_padding"
+            android:text="@string/user_agreement"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_regular"
+            app:drawableRightCompat="@drawable/ic_arrow_forward" />
+
+    </LinearLayout>
+
+</LinearLayout>
