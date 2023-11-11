@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?attr/colorPrimary"
     android:orientation="vertical"
     android:stateListAnimator="@null"
+    android:theme="@style/Base.Theme.PlaylistMaker"
     tools:context=".SettingsActivity">
 
     <LinearLayout
@@ -18,23 +19,16 @@
 
         <ImageButton
             android:id="@+id/buttonBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:background="@drawable/ic_arrow_back"
-            android:backgroundTint="@color/black" />
+            style="@style/buttonBack" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            style="@style/textTitle"
             android:paddingStart="12dp"
             android:paddingTop="10dp"
             android:paddingEnd="86dp"
             android:paddingBottom="12dp"
             android:text="@string/setting"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_title" />
+            android:textColor="?attr/colorOnPrimary" />
     </LinearLayout>
 
     <LinearLayout
@@ -44,49 +38,32 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/darkTheme"
+            style="@style/textRegular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="@dimen/vertical_indent_the_button_on_screen_the_settings"
             android:paddingStart="@dimen/left_margin_the_screen"
             android:paddingEnd="@dimen/icon_padding"
-            android:switchTextAppearance="@style/TextAppearance.AppCompat.Small"
             android:text="@string/dark_theme"
-            android:textSize="@dimen/text_size_regular" />
+            android:theme="@style/MySwitch" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/vertical_indent_the_button_on_screen_the_settings"
-            android:layout_marginStart="@dimen/left_margin_the_screen"
-            android:layout_marginEnd="@dimen/right_margin_the_screen_setting"
-            android:drawablePadding="@dimen/icon_padding"
+        <Button
+            android:id="@+id/share"
+            style="@style/SettingsScreenButton"
             android:text="@string/share"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_regular"
             app:drawableRightCompat="@drawable/ic_share" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/vertical_indent_the_button_on_screen_the_settings"
-            android:layout_marginStart="@dimen/left_margin_the_screen"
-            android:layout_marginEnd="@dimen/right_margin_the_screen_setting"
-            android:drawablePadding="@dimen/icon_padding"
+        <Button
+            android:id="@+id/support"
+            style="@style/SettingsScreenButton"
             android:text="@string/support"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_regular"
             app:drawableRightCompat="@drawable/ic_support" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/vertical_indent_the_button_on_screen_the_settings"
-            android:layout_marginStart="@dimen/left_margin_the_screen"
-            android:layout_marginEnd="@dimen/right_margin_the_screen_setting"
-            android:drawablePadding="@dimen/icon_padding"
+        <Button
+            android:id="@+id/user_agreement"
+            style="@style/SettingsScreenButton"
             android:text="@string/user_agreement"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size_regular"
             app:drawableRightCompat="@drawable/ic_arrow_forward" />
 
     </LinearLayout>
