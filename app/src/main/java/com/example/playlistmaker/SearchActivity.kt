@@ -7,9 +7,9 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 
 class SearchActivity : AppCompatActivity() {
     private var userInput: String = VALUE_USER_INPUT
@@ -29,8 +29,8 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val buttonBack = findViewById<ImageButton>(R.id.exit_search)
-        buttonBack.setOnClickListener {
+        val toolbar = findViewById<Toolbar>(R.id.toolbar_search)
+        toolbar.setNavigationOnClickListener() {
             finish()
         }
 

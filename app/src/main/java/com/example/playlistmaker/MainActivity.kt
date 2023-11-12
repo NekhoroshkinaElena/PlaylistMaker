@@ -13,13 +13,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val sharedPreferences = getSharedPreferences("Mode", Context.MODE_PRIVATE)
-        val darkMode = sharedPreferences.getBoolean("night", false)
-
-        if (darkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        }
-
         val buttonSearch = findViewById<Button>(R.id.buttonSearch)
         val buttonClickListener: View.OnClickListener = View.OnClickListener {
             startActivity(Intent(this@MainActivity, SearchActivity::class.java))

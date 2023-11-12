@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,26 +10,12 @@
     android:theme="@style/Base.Theme.PlaylistMaker"
     tools:context=".SettingsActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="4dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="52dp">
-
-        <ImageButton
-            android:id="@+id/exit_search"
-            style="@style/buttonBack" />
-
-        <TextView
-            style="@style/textTitle"
-            android:paddingStart="12dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="86dp"
-            android:paddingBottom="12dp"
-            android:text="@string/search"
-            android:textColor="?attr/colorOnPrimary" />
-    </LinearLayout>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_search"
+        style="@style/toolbarStyle"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="@string/search"
+        app:titleTextColor="?attr/colorOnPrimary" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -48,8 +35,8 @@
             android:layout_marginEnd="40dp"
             android:background="?attr/backgroundForSearch"
             android:drawableStart="@drawable/ic_search_little"
-            android:drawableTint="?attr/colorSecondaryVariant"
             android:drawablePadding="@dimen/icon_padding"
+            android:drawableTint="?attr/colorSecondaryVariant"
             android:hint="@string/search"
             android:inputType="text"
             android:lines="1"

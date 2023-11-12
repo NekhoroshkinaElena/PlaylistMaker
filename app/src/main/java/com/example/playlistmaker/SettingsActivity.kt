@@ -2,13 +2,14 @@ package com.example.playlistmaker
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.widget.Toolbar
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,30 +18,19 @@ class SettingsActivity : AppCompatActivity() {
 
         val switch = findViewById<SwitchCompat>(R.id.darkTheme)
 
-        val sharedPreferences = getSharedPreferences("Mode", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-
-        val nightMode = sharedPreferences.getBoolean("night", false)
-
-        if (nightMode) {
-            switch.isChecked = true
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        }
-
         switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                editor.putBoolean("night", true)
-                editor.apply()
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                editor.putBoolean("night", false)
-                editor.apply()
             }
         }
 
-        val buttonBack = findViewById<ImageButton>(R.id.buttonBack)
-        buttonBack.setOnClickListener {
+        switch.isChecked = (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar_settings)
+        toolbar.setNavigationOnClickListener() {
             finish()
         }
 

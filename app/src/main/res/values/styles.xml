@@ -33,7 +33,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
-        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
         <item name="android:textFontWeight">@integer/header_width</item>
         <item name="android:textSize">@dimen/text_size_title</item>
         <item name="android:orientation">horizontal</item>
@@ -68,12 +68,17 @@
         <item name="android:drawableTint">@color/grey</item>
     </style>
 
-    <style name="buttonBack">
-        <item name="android:layout_width">wrap_content</item>
+    <style name="toolbarStyle">
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">12dp</item>
-        <item name="android:backgroundTint">?attr/colorOnPrimary</item>
-        <item name="android:background">@drawable/ic_arrow_back</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginVertical">4dp</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginEnd">52dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="maxButtonHeight">48dp</item>
+        <item name="titleTextAppearance">@style/textTitle</item>
+
     </style>
 
     <style name="buttonClear">
