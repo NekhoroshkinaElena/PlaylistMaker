@@ -8,6 +8,15 @@
     <string name="share">Поделиться приложением</string>
     <string name="support">Написать в поддержку</string>
     <string name="user_agreement">Пользовательское соглашение</string>
-    <string name="screenSearch">Пустой экран поиска</string>
-    <string name="screenLibrary">Пустой экран медиатеки</string>
+    <string name="screen_search">Пустой экран поиска</string>
+    <string name="screen_library">Пустой экран медиатеки</string>
+    <string name="message_for_developer">
+        Спасибо разработчикам и разработчицам за крутое приложение!
+    </string>
+    <string name="your_email">muxaewaelena225@ya.ru</string>
+    <string name="subject_message">
+        Сообщение разработчикам и разработчицам приложения Playlist Maker
+    </string>
+    <string name="practicum_offer">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="android_developer">https://practicum.yandex.ru/android-developer/</string>
 </resources>

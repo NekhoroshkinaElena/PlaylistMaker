@@ -6,10 +6,11 @@
     tools:context=".LibraryActivity">
 
     <TextView
+        style="@style/textRegular"
         android:id="@+id/message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/screenLibrary" />
+        android:text="@string/screen_library" />
 </FrameLayout>
