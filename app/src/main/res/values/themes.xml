@@ -8,11 +8,12 @@
         <item name="colorPrimaryVariant">@color/grey</item>
         <item name="colorSecondaryVariant">@color/grey</item>
 
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnPrimary">@color/YP_black</item>
         <item name="colorOnSecondary">@color/white</item>
 
         <item name="android:statusBarColor">?attr/colorSecondary</item>
 
         <item name="backgroundForSearch">@color/YP_Light_Gray</item>
+        <item name="textColorForTrack">@color/black</item>
     </style>
 </resources>

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="backgroundForSearch" format="color|reference" />
+<attr name="backgroundForSearch" format="color|reference" />
+<attr name="textColorForTrack" format="color|reference" />
+<attr name="textColorForArtistName" format="color|reference"/>
 </resources>

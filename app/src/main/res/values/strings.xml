@@ -19,4 +19,6 @@
     </string>
     <string name="practicum_offer">https://yandex.ru/legal/practicum_offer/</string>
     <string name="android_developer">https://practicum.yandex.ru/android-developer/</string>
+    <string name="nameTrack">Название трека</string>
+    <string name="artistName">Исполнитель</string>
 </resources>
