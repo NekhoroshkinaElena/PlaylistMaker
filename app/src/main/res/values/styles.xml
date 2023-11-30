@@ -11,14 +11,14 @@
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">@dimen/bottom_indent_the_button_on_screen_main</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/YP_black</item>
         <item name="android:textSize">@dimen/text_size_title</item>
         <item name="android:textFontWeight">@integer/header_width</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="cornerRadius">@dimen/button_radius</item>
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">@dimen/icon_padding</item>
-        <item name="iconTint">@color/black</item>
+        <item name="iconTint">@color/YP_black</item>
         <item name="android:stateListAnimator">@null</item>"
     </style>
 
@@ -72,16 +72,26 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:layout_marginVertical">4dp</item>
-        <item name="android:layout_marginStart">4dp</item>
-        <item name="android:layout_marginEnd">52dp</item>
-        <item name="android:minHeight">48dp</item>
-        <item name="maxButtonHeight">48dp</item>
         <item name="titleTextAppearance">@style/textTitle</item>
+    </style>
 
+    <style name="subtitleTheTrack">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">?attr/colorPrimaryVariant</item>
+        <item name="android:textSize">@dimen/text_size_regular_for_track</item>
+        <item name="android:textFontWeight">@integer/regular_text_width</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="subtitleTheTrack.titleTheTrack">
+        <item name="android:textSize">@dimen/text_size_regular</item>
+        <item name="android:textColor">?attr/textColorForTrack</item>
     </style>
 
     <style name="buttonClear">
         <item name="tint">@color/grey</item>
     </style>
+
 </resources>

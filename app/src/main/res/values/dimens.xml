@@ -2,6 +2,7 @@
 <resources>
     <dimen name="text_size_title">22sp</dimen>
     <dimen name="text_size_regular">16sp</dimen>
+    <dimen name="text_size_regular_for_track">11sp</dimen>
     <dimen name="icon_padding">8dp</dimen>
     <dimen name="button_radius">16dp</dimen>
     <dimen name="vertical_indent_the_button_on_screen_the_settings">24dp</dimen>
@@ -9,5 +10,5 @@
     <dimen name="left_margin_the_screen">16dp</dimen>
     <dimen name="right_margin_the_screen_setting">12dp</dimen>
     <integer name="header_width">500</integer>
-    <integer name="regular_text_width">500</integer>
+    <integer name="regular_text_width">400</integer>
 </resources>

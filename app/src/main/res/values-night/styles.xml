@@ -8,12 +8,12 @@
     </style>
 
     <style name="SearchBar">
-        <item name="android:textColorHint">@color/black</item>
-        <item name="android:drawableTint">@color/black</item>
+        <item name="android:textColorHint">@color/YP_black</item>
+        <item name="android:drawableTint">@color/YP_black</item>
     </style>
 
     <style name="buttonClear">
-        <item name="tint">@color/black</item>
+        <item name="tint">@color/YP_black</item>
     </style>
 
 </resources>
