@@ -21,4 +21,9 @@
     <string name="android_developer">https://practicum.yandex.ru/android-developer/</string>
     <string name="nameTrack">Название трека</string>
     <string name="artistName">Исполнитель</string>
+    <string name="something_went_wrong">Проблемы со связью\n \nЗагрузка не удалась.
+        Проверьте подключение к интернету</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="update">Обновить</string>
+    <string name="go_to_the_track">Переходим к треку</string>
 </resources>
