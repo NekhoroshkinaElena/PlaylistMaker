@@ -38,9 +38,11 @@
             android:drawablePadding="@dimen/icon_padding"
             android:drawableTint="?attr/colorSecondaryVariant"
             android:hint="@string/search"
+            android:imeOptions="actionDone"
             android:inputType="text"
             android:lines="1"
             android:paddingVertical="10dp"
+            android:singleLine="true"
             android:textColor="@color/YP_black"
             android:textColorHint="?attr/colorSecondaryVariant" />
 
@@ -56,11 +58,54 @@
             android:visibility="gone" />
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/trackList"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/trackList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <ImageView
+            android:id="@+id/placeholderImage"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="102dp" />
+
+        <TextView
+            android:id="@+id/placeholderMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="238dp"
+            android:fontFamily="@font/ys_display_medium"
+            android:textAlignment="center"
+            android:textColor="?attr/colorOnPrimary"
+            android:textFontWeight="@integer/regular_text_width"
+            android:textSize="@dimen/error_text_size"
+            tools:text="@string/nothing_found" />
+
+        <Button
+            android:id="@+id/buttonUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="350dp"
+            android:backgroundTint="?attr/colorOnPrimary"
+            android:fontFamily="@font/ys_display_medium"
+            android:foreground="?attr/selectableItemBackground"
+            android:stateListAnimator="@null"
+            android:text="@string/update"
+            android:textColor="?attr/colorPrimary"
+            android:textFontWeight="@integer/header_width"
+            android:textSize="@dimen/text_size_button_update"
+            android:visibility="invisible"
+            app:cornerRadius="54dp" />
+    </FrameLayout>
 
 </LinearLayout>

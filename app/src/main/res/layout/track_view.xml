@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/imageTrack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_marginVertical="8dp"
         android:layout_marginStart="13dp"
         app:layout_constraintBottom_toBottomOf="parent"

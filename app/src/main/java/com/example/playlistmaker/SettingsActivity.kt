@@ -1,6 +1,5 @@
 package com.example.playlistmaker
 
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
