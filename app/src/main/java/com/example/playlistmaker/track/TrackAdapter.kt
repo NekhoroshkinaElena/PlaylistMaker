@@ -5,8 +5,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
+import com.example.playlistmaker.history.SearchHistory
 
 class TrackAdapter(var results: ArrayList<Track>) : RecyclerView.Adapter<TrackViewHolder>() {
+
+    private lateinit var searchHistory: SearchHistory
+
+    fun setSearchHistory(searchHistory: SearchHistory) {
+        this.searchHistory = searchHistory
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater
@@ -26,6 +33,8 @@ class TrackAdapter(var results: ArrayList<Track>) : RecyclerView.Adapter<TrackVi
                 R.string.go_to_the_track,
                 Toast.LENGTH_SHORT
             ).show()
+
+            searchHistory.addTrackToHistory(results[position])
         }
     }
 

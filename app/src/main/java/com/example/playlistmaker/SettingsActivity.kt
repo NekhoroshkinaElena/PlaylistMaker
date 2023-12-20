@@ -6,26 +6,21 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val switch = findViewById<SwitchCompat>(R.id.darkTheme)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.darkTheme)
 
-        switch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
+        themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
+            (applicationContext as App).switchTheme(isChecked)
         }
 
-        switch.isChecked = (resources.configuration.uiMode and
+        themeSwitcher.isChecked = (resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar_settings)
@@ -40,7 +35,6 @@ class SettingsActivity : AppCompatActivity() {
                     shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.android_developer))
             startActivity(Intent.createChooser(shareIntent, getString(R.string.share)))
         }
-
 
         val supportButton = findViewById<Button>(R.id.support)
         supportButton.setOnClickListener {

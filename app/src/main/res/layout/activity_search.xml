@@ -76,6 +76,57 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="102dp" />
 
+        <LinearLayout
+            android:id="@+id/searchHistoryGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/youWereLookingFor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/ys_display_medium"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="12dp"
+                android:text="@string/you_were_looking_for"
+                android:textAlignment="center"
+                android:textColor="?attr/colorOnPrimary"
+                android:textFontWeight="@integer/header_width"
+                android:textSize="@dimen/error_text_size" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/historyList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:reverseLayout="true" />
+
+                    <Button
+                        android:id="@+id/buttonClearHistory"
+                        style="@style/SearchScreenButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:text="@string/clear_history" />
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
         <TextView
             android:id="@+id/placeholderMessage"
             android:layout_width="wrap_content"
@@ -92,20 +143,12 @@
 
         <Button
             android:id="@+id/buttonUpdate"
+            style="@style/SearchScreenButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="350dp"
-            android:backgroundTint="?attr/colorOnPrimary"
-            android:fontFamily="@font/ys_display_medium"
-            android:foreground="?attr/selectableItemBackground"
-            android:stateListAnimator="@null"
             android:text="@string/update"
-            android:textColor="?attr/colorPrimary"
-            android:textFontWeight="@integer/header_width"
-            android:textSize="@dimen/text_size_button_update"
-            android:visibility="invisible"
-            app:cornerRadius="54dp" />
+            android:visibility="invisible" />
     </FrameLayout>
 
 </LinearLayout>
