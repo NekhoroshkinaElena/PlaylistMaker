@@ -27,7 +27,7 @@
         tools:context=".SearchActivity">
 
         <EditText
-            android:id="@+id/inputEditText"
+            android:id="@+id/searchField"
             style="@style/textRegular"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -47,7 +47,7 @@
             android:textColorHint="?attr/colorSecondaryVariant" />
 
         <ImageView
-            android:id="@+id/clearIcon"
+            android:id="@+id/clearSearchBar"
             style="@style/buttonClear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/trackList"
+            android:id="@+id/rvTrackList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="16dp"
@@ -109,7 +109,7 @@
                     android:orientation="vertical">
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/historyList"
+                        android:id="@+id/rvHistoryList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"

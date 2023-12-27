@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.history.SearchHistory
 
-class TrackAdapter(var results: ArrayList<Track>) : RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(private val results: ArrayList<Track>) :
+    RecyclerView.Adapter<TrackViewHolder>() {
 
     private lateinit var searchHistory: SearchHistory
 

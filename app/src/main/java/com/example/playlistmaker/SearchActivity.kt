@@ -8,14 +8,8 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.history.SearchHistory
 import com.example.playlistmaker.track.Track
 import com.example.playlistmaker.track.TrackAdapter
@@ -59,32 +53,13 @@ class SearchActivity : AppCompatActivity() {
         userInput = savedInstanceState.getString(USER_INPUT, VALUE_USER_INPUT)
     }
 
-    private lateinit var toolbar: Toolbar
-    private lateinit var searchField: EditText
-    private lateinit var clearButton: ImageView
-    private lateinit var recyclerViewTrack: RecyclerView
-    private lateinit var placeholderImage: ImageView
-    private lateinit var placeholderMessage: TextView
-    private lateinit var buttonUpdate: Button
-    private lateinit var searchHistoryGroup: LinearLayout
-    private lateinit var searchHistoryList: RecyclerView
-    private lateinit var buttonClearSearchHistory: Button
+    private lateinit var binding: ActivitySearchBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
-
-        toolbar = findViewById(R.id.toolbar_search)
-        searchField = findViewById(R.id.inputEditText)
-        clearButton = findViewById(R.id.clearIcon)
-        recyclerViewTrack = findViewById(R.id.trackList)
-        placeholderImage = findViewById(R.id.placeholderImage)
-        placeholderMessage = findViewById(R.id.placeholderMessage)
-        buttonUpdate = findViewById(R.id.buttonUpdate)
-        searchHistoryGroup = findViewById(R.id.searchHistoryGroup)
-        searchHistoryList = findViewById(R.id.historyList)
-        buttonClearSearchHistory = findViewById(R.id.buttonClearHistory)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val sharedPreferences = getSharedPreferences(SEARCH_HISTORY_PREFERENCES, MODE_PRIVATE)
 
@@ -93,47 +68,47 @@ class SearchActivity : AppCompatActivity() {
         trackAdapter.setSearchHistory(searchHistory)
         searchHistoryTrackAdapter.setSearchHistory(searchHistory)
 
-        toolbar.setNavigationOnClickListener {
+        binding.toolbarSearch.setNavigationOnClickListener {
             finish()
         }
 
-        buttonClearSearchHistory.setOnClickListener {
+        binding.buttonClearHistory.setOnClickListener {
             searchHistory.clearTheHistory()
             searchHistoryTrack.clear()
             searchHistoryTrackAdapter.notifyDataSetChanged()
-            searchHistoryGroup.visibility = View.GONE
+            binding.searchHistoryGroup.visibility = View.GONE
         }
 
-        searchField.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && searchField.text.isEmpty() && searchHistory.getSearchHistory()
+        binding.searchField.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && binding.searchField.text.isEmpty() && searchHistory.getSearchHistory()
                     .isNotEmpty()
             ) {
                 searchHistoryTrack.clear()
                 searchHistoryTrack.addAll(searchHistory.getSearchHistory())
                 searchHistoryTrackAdapter.notifyDataSetChanged()
 
-                searchHistoryGroup.visibility = View.VISIBLE
+                binding.searchHistoryGroup.visibility = View.VISIBLE
 
             } else {
-                searchHistoryGroup.visibility = View.GONE
+                binding.searchHistoryGroup.visibility = View.GONE
             }
         }
 
-        searchField.setText(VALUE_USER_INPUT)
+        binding.searchField.setText(VALUE_USER_INPUT)
 
-        clearButton.setOnClickListener {
+        binding.clearSearchBar.setOnClickListener {
             searchHistoryTrack.clear()
             searchHistoryTrack.addAll(searchHistory.getSearchHistory())
             searchHistoryTrackAdapter.notifyDataSetChanged()
             trackAdapter.notifyDataSetChanged()
-            searchField.setText("")
+            binding.searchField.setText("")
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(searchField.windowToken, 0)
+            inputMethodManager?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
             listTracks.clear()
-            placeholderMessage.visibility = View.GONE
-            placeholderImage.visibility = View.GONE
-            buttonUpdate.visibility = View.GONE
+            binding.placeholderMessage.visibility = View.GONE
+            binding.placeholderImage.visibility = View.GONE
+            binding.buttonUpdate.visibility = View.GONE
         }
 
         val textWatcher = object : TextWatcher {
@@ -141,10 +116,10 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
+                binding.clearSearchBar.visibility = clearButtonVisibility(s)
                 userInput = s.toString()
-                searchHistoryGroup.visibility =
-                    if (searchField.hasFocus() && s?.isEmpty() == true && searchHistory.getSearchHistory()
+                binding.searchHistoryGroup.visibility =
+                    if (binding.searchField.hasFocus() && s?.isEmpty() == true && searchHistory.getSearchHistory()
                             .isNotEmpty()
                     ) View.VISIBLE else View.GONE
             }
@@ -153,22 +128,18 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        searchField.addTextChangedListener(textWatcher)
+        binding.searchField.addTextChangedListener(textWatcher)
 
-        searchField.setOnEditorActionListener { _, actionId, _ ->
+        binding.searchField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 search()
             }
             false
         }
 
-        trackAdapter.results = listTracks
+        binding.rvTrackList.adapter = trackAdapter
 
-        recyclerViewTrack.adapter = trackAdapter
-
-        searchHistoryTrackAdapter.results = searchHistoryTrack
-
-        searchHistoryList.adapter = searchHistoryTrackAdapter
+        binding.rvHistoryList.adapter = searchHistoryTrackAdapter
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -231,26 +202,26 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showResponse(text: String, image: Drawable?) {
         if (text.isEmpty()) {
-            placeholderMessage.visibility = View.GONE
-            buttonUpdate.visibility = View.GONE
-            placeholderImage.visibility = View.GONE
+            binding.placeholderMessage.visibility = View.GONE
+            binding.buttonUpdate.visibility = View.GONE
+            binding.placeholderImage.visibility = View.GONE
 
         } else {
-            placeholderMessage.visibility = View.VISIBLE
-            placeholderImage.visibility = View.VISIBLE
+            binding.placeholderMessage.visibility = View.VISIBLE
+            binding.placeholderImage.visibility = View.VISIBLE
         }
         when (text) {
             getString(R.string.something_went_wrong) -> {
-                buttonUpdate.visibility = View.VISIBLE
+                binding.buttonUpdate.visibility = View.VISIBLE
             }
 
-            else -> buttonUpdate.visibility = View.GONE
+            else -> binding.buttonUpdate.visibility = View.GONE
         }
         listTracks.clear()
         trackAdapter.notifyDataSetChanged()
-        placeholderMessage.text = text
-        placeholderImage.setImageDrawable(image)
-        buttonUpdate.setOnClickListener {
+        binding.placeholderMessage.text = text
+        binding.placeholderImage.setImageDrawable(image)
+        binding.buttonUpdate.setOnClickListener {
             search()
         }
     }
