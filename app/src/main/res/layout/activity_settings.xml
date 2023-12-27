@@ -23,8 +23,8 @@
         android:layout_marginTop="24dp"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/darkTheme"
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/themeSwitch"
             style="@style/textRegular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,19 +35,19 @@
             android:theme="@style/MySwitch" />
 
         <Button
-            android:id="@+id/share"
+            android:id="@+id/share_button"
             style="@style/SettingsScreenButton"
             android:text="@string/share"
             app:drawableRightCompat="@drawable/ic_share" />
 
         <Button
-            android:id="@+id/support"
+            android:id="@+id/support_button"
             style="@style/SettingsScreenButton"
             android:text="@string/support"
             app:drawableRightCompat="@drawable/ic_support" />
 
         <Button
-            android:id="@+id/user_agreement"
+            android:id="@+id/agreement_button"
             style="@style/SettingsScreenButton"
             android:text="@string/user_agreement"
             app:drawableRightCompat="@drawable/ic_arrow_forward" />
