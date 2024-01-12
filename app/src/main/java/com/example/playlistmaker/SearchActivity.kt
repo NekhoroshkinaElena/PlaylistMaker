@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
-import android.content.Context
+import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
@@ -10,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.history.SEARCH_HISTORY_KEY
 import com.example.playlistmaker.history.SearchHistory
 import com.example.playlistmaker.track.Track
 import com.example.playlistmaker.track.TrackAdapter
@@ -48,10 +50,15 @@ class SearchActivity : AppCompatActivity() {
     private val searchHistoryTrack = ArrayList<Track>()
     private val searchHistoryTrackAdapter = TrackAdapter(searchHistoryTrack)
 
+
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         userInput = savedInstanceState.getString(USER_INPUT, VALUE_USER_INPUT)
     }
+
+
+    private lateinit var listener: OnSharedPreferenceChangeListener
+
 
     private lateinit var binding: ActivitySearchBinding
 
@@ -66,11 +73,21 @@ class SearchActivity : AppCompatActivity() {
         val searchHistory = SearchHistory(sharedPreferences)
 
         trackAdapter.setSearchHistory(searchHistory)
+
         searchHistoryTrackAdapter.setSearchHistory(searchHistory)
 
         binding.toolbarSearch.setNavigationOnClickListener {
             finish()
         }
+
+        listener = OnSharedPreferenceChangeListener { _: SharedPreferences, key: String? ->
+            if (key == SEARCH_HISTORY_KEY) {
+                searchHistoryTrackAdapter.results = searchHistory.getSearchHistory()
+                searchHistoryTrackAdapter.notifyDataSetChanged()
+            }
+        }
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
 
         binding.buttonClearHistory.setOnClickListener {
             searchHistory.clearTheHistory()
@@ -103,7 +120,7 @@ class SearchActivity : AppCompatActivity() {
             trackAdapter.notifyDataSetChanged()
             binding.searchField.setText("")
             val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
             listTracks.clear()
             binding.placeholderMessage.visibility = View.GONE
@@ -119,7 +136,8 @@ class SearchActivity : AppCompatActivity() {
                 binding.clearSearchBar.visibility = clearButtonVisibility(s)
                 userInput = s.toString()
                 binding.searchHistoryGroup.visibility =
-                    if (binding.searchField.hasFocus() && s?.isEmpty() == true && searchHistory.getSearchHistory()
+                    if (binding.searchField.hasFocus() && s?.isEmpty() == true &&
+                        searchHistory.getSearchHistory()
                             .isNotEmpty()
                     ) View.VISIBLE else View.GONE
             }

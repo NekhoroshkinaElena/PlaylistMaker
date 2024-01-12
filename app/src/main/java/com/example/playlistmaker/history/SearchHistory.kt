@@ -8,10 +8,10 @@ const val SEARCH_HISTORY_KEY = "search_history_key"
 
 class SearchHistory(private val sharedPreferences: SharedPreferences) {
 
-    fun getSearchHistory(): Array<Track> {
+    fun getSearchHistory(): ArrayList<Track> {
         val json = sharedPreferences.getString(SEARCH_HISTORY_KEY, null)
-            ?: return emptyArray()
-        return Gson().fromJson(json, Array<Track>::class.java)
+            ?: return arrayListOf()
+        return ArrayList(Gson().fromJson(json, Array<Track>::class.java).toList())
     }
 
     fun addTrackToHistory(track: Track) {
