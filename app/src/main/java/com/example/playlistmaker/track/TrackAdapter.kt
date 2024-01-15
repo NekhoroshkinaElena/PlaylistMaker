@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.AudioPlayerActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.history.SearchHistory
-import com.example.playlistmaker.util.getYearFromString
+
+const val TRACK_KEY = "track"
 
 class TrackAdapter(var results: ArrayList<Track>) :
+
     RecyclerView.Adapter<TrackViewHolder>() {
 
     private lateinit var searchHistory: SearchHistory
@@ -36,15 +38,7 @@ class TrackAdapter(var results: ArrayList<Track>) :
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, AudioPlayerActivity::class.java)
-            intent.putExtra("trackCover", track.artworkUrl100)
-            intent.putExtra("trackName", track.trackName)
-            intent.putExtra("artistName", track.artistName)
-            intent.putExtra("trackTime", track.trackTimeMillis)
-            intent.putExtra("releaseDate", getYearFromString(track.releaseDate))
-            intent.putExtra("country", track.country)
-            intent.putExtra("genre", track.primaryGenreName)
-            intent.putExtra("album", track.collectionName)
-
+            intent.putExtra(TRACK_KEY, track)
             context.startActivity(intent)
 
             searchHistory.addTrackToHistory(results[position])

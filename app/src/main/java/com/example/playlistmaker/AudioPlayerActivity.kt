@@ -1,13 +1,18 @@
 package com.example.playlistmaker
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.track.TRACK_KEY
+import com.example.playlistmaker.track.Track
+import com.example.playlistmaker.util.getYearFromString
 import com.example.playlistmaker.util.millisecondToMinute
+
+const val IMAGE_CORNER_RADIUS = 8
 
 class AudioPlayerActivity : AppCompatActivity() {
 
@@ -22,36 +27,32 @@ class AudioPlayerActivity : AppCompatActivity() {
             finish()
         }
 
-        val arguments = intent.extras
+        val track: Track? = intent.getParcelableExtra(TRACK_KEY)
 
-        val trackCoverUrl =
-            arguments?.getString("trackCover")
-                ?.replaceAfterLast('/', "512x512bb.jpg")
-
-        val trackTime = arguments?.getString("trackTime") ?: ""
-        val album = arguments?.getString("album") ?: ""
+        val trackCoverUrl = track?.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
+        val trackTime = track?.trackTimeMillis ?: ""
+        val album = track?.collectionName ?: ""
 
         Glide.with(applicationContext)
             .load(trackCoverUrl)
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .placeholder(R.drawable.ic_placeholder_track)
             .centerCrop()
-            .transform(RoundedCorners(8))
+            .transform(RoundedCorners(IMAGE_CORNER_RADIUS))
             .into(binding.trackCover)
 
-        binding.trackName.text = arguments?.getString("trackName")
-        binding.artistName.text = arguments?.getString("artistName")
+        binding.trackName.text = track?.trackName
+        binding.artistName.text = track?.artistName
         binding.trackTime.text = millisecondToMinute(trackTime)
         binding.trackDurationValue.text = millisecondToMinute(trackTime)
-        binding.trackName.text = arguments?.getString("trackName")
-        binding.releaseDateValue.text = arguments?.getString("releaseDate")
-        binding.countryValue.text = arguments?.getString("country")
-        binding.genreValue.text = arguments?.getString("genre")
+        binding.releaseDateValue.text = getYearFromString(track?.releaseDate)
+        binding.countryValue.text = track?.country
+        binding.genreValue.text = track?.primaryGenreName
 
-        if (!album.isNullOrBlank()) {
-            binding.collectionNameValue.text = arguments?.getString("album")
-            binding.collectionName.visibility = View.VISIBLE
-            binding.collectionNameValue.visibility = View.VISIBLE
+        if (album.isNotBlank()) {
+            binding.collectionNameValue.text = album
+            binding.collectionName.isVisible = true
+            binding.collectionNameValue.isVisible = true
         }
     }
 }
