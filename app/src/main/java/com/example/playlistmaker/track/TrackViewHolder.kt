@@ -35,7 +35,7 @@ class TrackViewHolder(parentView: View) : RecyclerView.ViewHolder(parentView) {
         Glide.with(itemView)
             .load(url)
             .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .placeholder(R.drawable.ic_placeholder)
+            .placeholder(R.drawable.ic_placeholder_track)
             .centerCrop()
             .transform(RoundedCorners(4))
             .into(image)

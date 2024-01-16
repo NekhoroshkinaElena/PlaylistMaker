@@ -25,6 +25,11 @@
             android:name=".SearchActivity"
             android:exported="false" />
         <activity
+            android:name=".AudioPlayerActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
