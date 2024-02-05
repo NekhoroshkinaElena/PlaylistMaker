@@ -10,8 +10,7 @@ import com.example.playlistmaker.history.SearchHistory
 
 const val TRACK_KEY = "track"
 
-class TrackAdapter(var results: ArrayList<Track>) :
-
+class TrackAdapter(var results: ArrayList<Track>, val clickDebounce: () -> Boolean) :
     RecyclerView.Adapter<TrackViewHolder>() {
 
     private lateinit var searchHistory: SearchHistory
@@ -35,8 +34,8 @@ class TrackAdapter(var results: ArrayList<Track>) :
         holder.bind(track)
 
         val context = holder.itemView.context
-
         holder.itemView.setOnClickListener {
+            clickDebounce()
             val intent = Intent(context, AudioPlayerActivity::class.java)
             intent.putExtra(TRACK_KEY, track)
             context.startActivity(intent)

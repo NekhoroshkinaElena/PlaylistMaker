@@ -4,12 +4,15 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.history.SEARCH_HISTORY_KEY
 import com.example.playlistmaker.history.SearchHistory
@@ -28,12 +31,18 @@ const val SEARCH_HISTORY_PREFERENCES = "search_history_preferences"
 
 class SearchActivity : AppCompatActivity() {
 
-    private var userInput: String = VALUE_USER_INPUT
-
     companion object {
         const val USER_INPUT = "USER_INPUT"
         const val VALUE_USER_INPUT = ""
+        private const val CLICK_DEBOUNCE_DELAY = 1_000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2_000L
     }
+
+    private var isClickAllowed = true
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    private var userInput: String = VALUE_USER_INPUT
 
     private val trackBaseUrl = "https://itunes.apple.com"
 
@@ -45,10 +54,13 @@ class SearchActivity : AppCompatActivity() {
     private val trackService = retrofit.create<TrackApi>()
 
     private val listTracks = ArrayList<Track>()
-    private val trackAdapter = TrackAdapter(listTracks)
+    private val trackAdapter = TrackAdapter(listTracks) { clickDebounce() }
+
 
     private val searchHistoryTrack = ArrayList<Track>()
-    private val searchHistoryTrackAdapter = TrackAdapter(searchHistoryTrack)
+    private val searchHistoryTrackAdapter = TrackAdapter(searchHistoryTrack) { clickDebounce() }
+
+    private val searchRunnable = Runnable { search() }
 
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -139,7 +151,14 @@ class SearchActivity : AppCompatActivity() {
                     if (binding.searchField.hasFocus() && s?.isEmpty() == true &&
                         searchHistory.getSearchHistory()
                             .isNotEmpty()
-                    ) View.VISIBLE else View.GONE
+                    ) {
+                        listTracks.clear()
+                        trackAdapter.notifyDataSetChanged()
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
+                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -175,12 +194,16 @@ class SearchActivity : AppCompatActivity() {
 
     private fun search() {
         if (userInput.isEmpty()) return
+        listTracks.clear()
+        trackAdapter.notifyDataSetChanged()
+        binding.progressBar.isVisible = true
         trackService.search(userInput)
             .enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(
                     call: Call<TrackResponse>,
                     response: Response<TrackResponse>
                 ) {
+                    binding.progressBar.isVisible = false
                     when (response.code()) {
                         200 -> {
                             if (response.body()?.results?.isNotEmpty() == true) {
@@ -210,12 +233,18 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                    binding.progressBar.isVisible = false
                     showResponse(
                         getString(R.string.something_went_wrong),
                         getDrawable(R.drawable.ic_something_went_wrong)
                     )
                 }
             })
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private fun showResponse(text: String, image: Drawable?) {
@@ -242,5 +271,14 @@ class SearchActivity : AppCompatActivity() {
         binding.buttonUpdate.setOnClickListener {
             search()
         }
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
     }
 }
