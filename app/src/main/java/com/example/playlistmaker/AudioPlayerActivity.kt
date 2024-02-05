@@ -29,7 +29,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private var playerState = STATE_DEFAULT
 
-    private var mediaPlayer = MediaPlayer()
+    private val mediaPlayer = MediaPlayer()
 
     private lateinit var binding: ActivityAudioPlayerBinding
 
