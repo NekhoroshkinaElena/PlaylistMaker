@@ -135,9 +135,7 @@ class SearchActivity : AppCompatActivity() {
                 getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
             listTracks.clear()
-            binding.placeholderMessage.visibility = View.GONE
-            binding.placeholderImage.visibility = View.GONE
-            binding.buttonUpdate.visibility = View.GONE
+            hideFailedRequestMessage()
         }
 
         val textWatcher = object : TextWatcher {
@@ -156,6 +154,7 @@ class SearchActivity : AppCompatActivity() {
                         trackAdapter.notifyDataSetChanged()
                         View.VISIBLE
                     } else {
+                        hideFailedRequestMessage()
                         View.GONE
                     }
                 searchDebounce()
@@ -249,9 +248,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showResponse(text: String, image: Drawable?) {
         if (text.isEmpty()) {
-            binding.placeholderMessage.visibility = View.GONE
-            binding.buttonUpdate.visibility = View.GONE
-            binding.placeholderImage.visibility = View.GONE
+            hideFailedRequestMessage()
 
         } else {
             binding.placeholderMessage.visibility = View.VISIBLE
@@ -269,6 +266,7 @@ class SearchActivity : AppCompatActivity() {
         binding.placeholderMessage.text = text
         binding.placeholderImage.setImageDrawable(image)
         binding.buttonUpdate.setOnClickListener {
+            hideFailedRequestMessage()
             search()
         }
     }
@@ -280,5 +278,11 @@ class SearchActivity : AppCompatActivity() {
             handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
         }
         return current
+    }
+
+    private fun hideFailedRequestMessage() {
+        binding.placeholderMessage.visibility = View.GONE
+        binding.buttonUpdate.visibility = View.GONE
+        binding.placeholderImage.visibility = View.GONE
     }
 }

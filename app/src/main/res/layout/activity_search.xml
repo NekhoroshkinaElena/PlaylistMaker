@@ -156,6 +156,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="350dp"
             android:text="@string/update"
+            android:foreground="?attr/selectableItemBackground"
             android:visibility="invisible" />
     </FrameLayout>
 

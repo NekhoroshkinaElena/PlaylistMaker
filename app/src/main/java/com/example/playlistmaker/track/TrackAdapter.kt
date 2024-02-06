@@ -35,13 +35,13 @@ class TrackAdapter(var results: ArrayList<Track>, val clickDebounce: () -> Boole
 
         val context = holder.itemView.context
         holder.itemView.setOnClickListener {
-            clickDebounce()
-            val intent = Intent(context, AudioPlayerActivity::class.java)
-            intent.putExtra(TRACK_KEY, track)
-            context.startActivity(intent)
+            if (clickDebounce()) {
+                val intent = Intent(context, AudioPlayerActivity::class.java)
+                intent.putExtra(TRACK_KEY, track)
+                context.startActivity(intent)
 
-            searchHistory.addTrackToHistory(results[position])
-
+                searchHistory.addTrackToHistory(results[position])
+            }
         }
     }
 
