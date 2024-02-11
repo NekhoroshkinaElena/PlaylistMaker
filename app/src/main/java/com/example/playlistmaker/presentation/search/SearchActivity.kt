@@ -1,5 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.search
 
+import Creator
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.graphics.drawable.Drawable
@@ -13,19 +14,13 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.history.SEARCH_HISTORY_KEY
+import com.example.playlistmaker.data.history.TrackHistoryStorage
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.history.SEARCH_HISTORY_KEY
-import com.example.playlistmaker.history.SearchHistory
-import com.example.playlistmaker.track.Track
-import com.example.playlistmaker.track.TrackAdapter
-import com.example.playlistmaker.track.TrackApi
-import com.example.playlistmaker.track.TrackResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
+import com.example.playlistmaker.domain.api.TrackInteractor
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.models.TracksListResponse
 
 const val SEARCH_HISTORY_PREFERENCES = "search_history_preferences"
 
@@ -44,18 +39,8 @@ class SearchActivity : AppCompatActivity() {
 
     private var userInput: String = VALUE_USER_INPUT
 
-    private val trackBaseUrl = "https://itunes.apple.com"
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(trackBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val trackService = retrofit.create<TrackApi>()
-
     private val listTracks = ArrayList<Track>()
     private val trackAdapter = TrackAdapter(listTracks) { clickDebounce() }
-
 
     private val searchHistoryTrack = ArrayList<Track>()
     private val searchHistoryTrackAdapter = TrackAdapter(searchHistoryTrack) { clickDebounce() }
@@ -69,24 +54,25 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-    private lateinit var listener: OnSharedPreferenceChangeListener
+    private lateinit var tracksInteractor: TrackInteractor
 
+    private lateinit var listener: OnSharedPreferenceChangeListener
 
     private lateinit var binding: ActivitySearchBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        val sharedPreferences = getSharedPreferences(SEARCH_HISTORY_PREFERENCES, MODE_PRIVATE)
+
+        tracksInteractor = Creator.provideTracksInteractor(TrackHistoryStorage(sharedPreferences))
+
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sharedPreferences = getSharedPreferences(SEARCH_HISTORY_PREFERENCES, MODE_PRIVATE)
+        trackAdapter.setSearchHistory(tracksInteractor)
 
-        val searchHistory = SearchHistory(sharedPreferences)
-
-        trackAdapter.setSearchHistory(searchHistory)
-
-        searchHistoryTrackAdapter.setSearchHistory(searchHistory)
+        searchHistoryTrackAdapter.setSearchHistory(tracksInteractor)
 
         binding.toolbarSearch.setNavigationOnClickListener {
             finish()
@@ -94,7 +80,7 @@ class SearchActivity : AppCompatActivity() {
 
         listener = OnSharedPreferenceChangeListener { _: SharedPreferences, key: String? ->
             if (key == SEARCH_HISTORY_KEY) {
-                searchHistoryTrackAdapter.results = searchHistory.getSearchHistory()
+                searchHistoryTrackAdapter.results = tracksInteractor.getSearchHistory()
                 searchHistoryTrackAdapter.notifyDataSetChanged()
             }
         }
@@ -102,18 +88,18 @@ class SearchActivity : AppCompatActivity() {
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
 
         binding.buttonClearHistory.setOnClickListener {
-            searchHistory.clearTheHistory()
+            tracksInteractor.clearTheHistory()
             searchHistoryTrack.clear()
             searchHistoryTrackAdapter.notifyDataSetChanged()
             binding.searchHistoryGroup.visibility = View.GONE
         }
 
         binding.searchField.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.searchField.text.isEmpty() && searchHistory.getSearchHistory()
+            if (hasFocus && binding.searchField.text.isEmpty() && tracksInteractor.getSearchHistory()
                     .isNotEmpty()
             ) {
                 searchHistoryTrack.clear()
-                searchHistoryTrack.addAll(searchHistory.getSearchHistory())
+                searchHistoryTrack.addAll(tracksInteractor.getSearchHistory())
                 searchHistoryTrackAdapter.notifyDataSetChanged()
 
                 binding.searchHistoryGroup.visibility = View.VISIBLE
@@ -127,7 +113,7 @@ class SearchActivity : AppCompatActivity() {
 
         binding.clearSearchBar.setOnClickListener {
             searchHistoryTrack.clear()
-            searchHistoryTrack.addAll(searchHistory.getSearchHistory())
+            searchHistoryTrack.addAll(tracksInteractor.getSearchHistory())
             searchHistoryTrackAdapter.notifyDataSetChanged()
             trackAdapter.notifyDataSetChanged()
             binding.searchField.setText("")
@@ -147,7 +133,7 @@ class SearchActivity : AppCompatActivity() {
                 userInput = s.toString()
                 binding.searchHistoryGroup.visibility =
                     if (binding.searchField.hasFocus() && s?.isEmpty() == true &&
-                        searchHistory.getSearchHistory()
+                        tracksInteractor.getSearchHistory()
                             .isNotEmpty()
                     ) {
                         listTracks.clear()
@@ -196,49 +182,7 @@ class SearchActivity : AppCompatActivity() {
         listTracks.clear()
         trackAdapter.notifyDataSetChanged()
         binding.progressBar.isVisible = true
-        trackService.search(userInput)
-            .enqueue(object : Callback<TrackResponse> {
-                override fun onResponse(
-                    call: Call<TrackResponse>,
-                    response: Response<TrackResponse>
-                ) {
-                    binding.progressBar.isVisible = false
-                    when (response.code()) {
-                        200 -> {
-                            if (response.body()?.results?.isNotEmpty() == true) {
-                                showResponse("", null)
-                                listTracks.addAll(response.body()?.results!!)
-                                trackAdapter.notifyDataSetChanged()
-                            } else {
-                                showResponse(
-                                    getString(R.string.nothing_found),
-                                    getDrawable(R.drawable.ic_not_found)
-                                )
-                            }
-                        }
-
-                        404 -> showResponse(
-                            getString(R.string.nothing_found),
-                            getDrawable(R.drawable.ic_not_found)
-                        )
-
-                        else -> {
-                            showResponse(
-                                getString(R.string.something_went_wrong),
-                                getDrawable(R.drawable.ic_something_went_wrong)
-                            )
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    binding.progressBar.isVisible = false
-                    showResponse(
-                        getString(R.string.something_went_wrong),
-                        getDrawable(R.drawable.ic_something_went_wrong)
-                    )
-                }
-            })
+        tracksInteractor.searchTrack(userInput, consumer)
     }
 
     private fun searchDebounce() {
@@ -284,5 +228,35 @@ class SearchActivity : AppCompatActivity() {
         binding.placeholderMessage.visibility = View.GONE
         binding.buttonUpdate.visibility = View.GONE
         binding.placeholderImage.visibility = View.GONE
+    }
+
+    private val consumer = object : TrackInteractor.TracksConsumer {
+        override fun consume(tracksListResponse: TracksListResponse) {
+            handler.post {
+                binding.progressBar.isVisible = false
+                if (tracksListResponse.codeResponse == 200) {
+                    if (tracksListResponse.tracks.isEmpty()) {
+                        showResponse(
+                            getString(R.string.nothing_found),
+                            getDrawable(R.drawable.ic_not_found)
+                        )
+                    } else {
+                        showResponse("", null)
+                        listTracks.addAll(tracksListResponse.tracks)
+                        trackAdapter.notifyDataSetChanged()
+                    }
+                } else if (tracksListResponse.codeResponse == 404) {
+                    showResponse(
+                        getString(R.string.nothing_found),
+                        getDrawable(R.drawable.ic_not_found)
+                    )
+                } else {
+                    showResponse(
+                        getString(R.string.something_went_wrong),
+                        getDrawable(R.drawable.ic_something_went_wrong)
+                    )
+                }
+            }
+        }
     }
 }

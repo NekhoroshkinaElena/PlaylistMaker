@@ -1,22 +1,23 @@
-package com.example.playlistmaker.track
+package com.example.playlistmaker.presentation.search
 
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.AudioPlayerActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.history.SearchHistory
+import com.example.playlistmaker.domain.api.TrackInteractor
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.player.AudioPlayerActivity
 
 const val TRACK_KEY = "track"
 
 class TrackAdapter(var results: ArrayList<Track>, val clickDebounce: () -> Boolean) :
     RecyclerView.Adapter<TrackViewHolder>() {
 
-    private lateinit var searchHistory: SearchHistory
+    private lateinit var trackInteractor: TrackInteractor
 
-    fun setSearchHistory(searchHistory: SearchHistory) {
-        this.searchHistory = searchHistory
+    fun setSearchHistory(trackInteractor: TrackInteractor) {
+        this.trackInteractor = trackInteractor
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
@@ -40,7 +41,7 @@ class TrackAdapter(var results: ArrayList<Track>, val clickDebounce: () -> Boole
                 intent.putExtra(TRACK_KEY, track)
                 context.startActivity(intent)
 
-                searchHistory.addTrackToHistory(results[position])
+                trackInteractor.addTrackToHistory(results[position])
             }
         }
     }

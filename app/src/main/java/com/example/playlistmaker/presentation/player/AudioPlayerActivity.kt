@@ -1,6 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.player
 
-import android.media.MediaPlayer
+import Creator
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,9 +9,12 @@ import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
-import com.example.playlistmaker.track.TRACK_KEY
-import com.example.playlistmaker.track.Track
+import com.example.playlistmaker.domain.api.MediaPlayerInteractor
+import com.example.playlistmaker.domain.models.PlayerState
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.search.TRACK_KEY
 import com.example.playlistmaker.util.getYearFromString
 import com.example.playlistmaker.util.millisecondToMinute
 
@@ -20,18 +23,12 @@ const val IMAGE_CORNER_RADIUS = 8
 class AudioPlayerActivity : AppCompatActivity() {
 
     companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
         private const val TIME_UPDATE_DELAY = 500L
     }
 
-    private var playerState = STATE_DEFAULT
-
-    private val mediaPlayer = MediaPlayer()
-
     private lateinit var binding: ActivityAudioPlayerBinding
+
+    private lateinit var trackPlayer: MediaPlayerInteractor
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -47,6 +44,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         val track: Track? = intent.getParcelableExtra(TRACK_KEY)
+
+        trackPlayer = Creator.provideTrackPlayer(track)
 
         val trackCoverUrl = track?.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
         val trackTime = track?.trackTimeMillis ?: ""
@@ -74,76 +73,48 @@ class AudioPlayerActivity : AppCompatActivity() {
             binding.collectionNameValue.isVisible = true
         }
 
-        preparePlayer(track?.previewUrl)
+        trackPlayer.preparePlayer {
+            handler.removeCallbacks(run)
+            binding.playTrack.setImageResource(R.drawable.ic_play)
+            binding.trackTime.text =
+                millisecondToMinute(trackPlayer.getCurrentPosition())
+        }
 
         binding.playTrack.setOnClickListener {
-            playbackControl()
+            trackPlayer.playbackControl(
+                start = {
+                    binding.playTrack.setImageResource(R.drawable.ic_button_pause)
+                    handler.post(run)
+                },
+                stop = {
+                    handler.removeCallbacks(run)
+                    binding.playTrack.setImageResource(R.drawable.ic_play)
+                })
         }
-    }
-
-    private fun preparePlayer(previewUrl: String?) {
-        mediaPlayer.setDataSource(previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            handler.removeCallbacks(run)
-            playerState = STATE_PREPARED
-            binding.playTrack.setImageResource(R.drawable.ic_play)
-            mediaPlayer.seekTo(0)
-            binding.trackTime.text =
-                millisecondToMinute(mediaPlayer.currentPosition.toString())
-        }
-    }
-
-    private fun playbackControl() {
-        when (playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-
-            STATE_PAUSED, STATE_PREPARED -> {
-                startPlayer()
-            }
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        binding.playTrack.setImageResource(R.drawable.ic_button_pause)
-        playerState = STATE_PLAYING
-        handler.post(run)
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        binding.playTrack.setImageResource(R.drawable.ic_play)
-        playerState = STATE_PAUSED
-        handler.removeCallbacks(run)
     }
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        trackPlayer.pausePlayer()
+        handler.removeCallbacks(run)
+        binding.playTrack.setImageResource(R.drawable.ic_play)
     }
 
     override fun onDestroy() {
         handler.removeCallbacks(run)
         super.onDestroy()
-        mediaPlayer.release()
+        trackPlayer.releasePlayer()
     }
 
     private fun timerUpdater(): Runnable {
         return object : Runnable {
             override fun run() {
-                if (playerState == STATE_PLAYING) {
+                if (trackPlayer.getState() == PlayerState.PLAYING) {
                     binding.trackTime.text =
-                        millisecondToMinute(mediaPlayer.currentPosition.toString())
+                        millisecondToMinute(trackPlayer.getCurrentPosition())
                     handler.postDelayed(this, TIME_UPDATE_DELAY)
                 }
             }
         }
     }
 }
-

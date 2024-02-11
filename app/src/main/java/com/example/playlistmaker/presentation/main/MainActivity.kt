@@ -1,10 +1,13 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.main
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.databinding.ActivityMainBinding
+import com.example.playlistmaker.presentation.mediateka.LibraryActivity
+import com.example.playlistmaker.presentation.search.SearchActivity
+import com.example.playlistmaker.presentation.setting.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
 
