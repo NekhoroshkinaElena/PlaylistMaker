@@ -4,10 +4,10 @@ import com.example.playlistmaker.data.dto.TrackRequest
 import com.example.playlistmaker.data.dto.TrackResponse
 import com.example.playlistmaker.domain.api.TrackRepository
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.models.TracksListResponse
+import com.example.playlistmaker.domain.models.TracksListResult
 
 class TracksRepositoryImpl(private val requester: Requester) : TrackRepository {
-    override fun searchTracks(text: String): TracksListResponse {
+    override fun searchTracks(text: String): TracksListResult {
         val response = requester.doRequest(TrackRequest(text))
 
         if (response.resultCode == 200) {
@@ -16,19 +16,19 @@ class TracksRepositoryImpl(private val requester: Requester) : TrackRepository {
                     it.trackId,
                     it.trackName,
                     it.artistName,
-                    it.trackTimeMillis,
+                    it.trackTimeMillis?:"",
                     it.artworkUrl100,
                     it.releaseDate,
-                    it.primaryGenreName,
-                    it.collectionName,
-                    it.country,
+                    it.primaryGenreName?:"",
+                    it.collectionName?:"",
+                    it.country?:"",
                     it.previewUrl
                 )
             }
-            return TracksListResponse(list, response.resultCode)
+            return TracksListResult(list, response.resultCode)
 
         } else {
-            return TracksListResponse(emptyList(), response.resultCode)
+            return TracksListResult(emptyList(), response.resultCode)
         }
     }
 }

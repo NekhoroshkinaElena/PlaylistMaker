@@ -1,3 +1,5 @@
+package com.example.playlistmaker
+
 import com.example.playlistmaker.data.TracksRepositoryImpl
 import com.example.playlistmaker.data.network.RetrofitRequester
 import com.example.playlistmaker.data.player.TrackPlayerImpl

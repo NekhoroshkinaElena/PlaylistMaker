@@ -1,6 +1,6 @@
 package com.example.playlistmaker.presentation.search
 
-import Creator
+import com.example.playlistmaker.Creator
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.graphics.drawable.Drawable
@@ -20,7 +20,7 @@ import com.example.playlistmaker.data.history.TrackHistoryStorage
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.models.TracksListResponse
+import com.example.playlistmaker.domain.models.TracksListResult
 
 const val SEARCH_HISTORY_PREFERENCES = "search_history_preferences"
 
@@ -231,21 +231,21 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private val consumer = object : TrackInteractor.TracksConsumer {
-        override fun consume(tracksListResponse: TracksListResponse) {
+        override fun consume(tracksListResult: TracksListResult) {
             handler.post {
                 binding.progressBar.isVisible = false
-                if (tracksListResponse.codeResponse == 200) {
-                    if (tracksListResponse.tracks.isEmpty()) {
+                if (tracksListResult.codeResponse == 200) {
+                    if (tracksListResult.tracks.isEmpty()) {
                         showResponse(
                             getString(R.string.nothing_found),
                             getDrawable(R.drawable.ic_not_found)
                         )
                     } else {
                         showResponse("", null)
-                        listTracks.addAll(tracksListResponse.tracks)
+                        listTracks.addAll(tracksListResult.tracks)
                         trackAdapter.notifyDataSetChanged()
                     }
-                } else if (tracksListResponse.codeResponse == 404) {
+                } else if (tracksListResult.codeResponse == 404) {
                     showResponse(
                         getString(R.string.nothing_found),
                         getDrawable(R.drawable.ic_not_found)

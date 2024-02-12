@@ -1,7 +1,7 @@
 package com.example.playlistmaker.domain.api
 
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.models.TracksListResponse
+import com.example.playlistmaker.domain.models.TracksListResult
 
 interface TrackInteractor {
     fun searchTrack(text: String, consumer: TracksConsumer)
@@ -13,6 +13,6 @@ interface TrackInteractor {
     fun clearTheHistory()
 
     interface TracksConsumer {
-        fun consume(tracksListResponse: TracksListResponse)
+        fun consume(tracksListResult: TracksListResult)
     }
 }
