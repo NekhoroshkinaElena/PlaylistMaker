@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:stateListAnimator="@null"
     android:theme="@style/Base.Theme.PlaylistMaker"
-    tools:context=".SettingsActivity">
+    tools:context=".presentation.setting.SettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_search"
@@ -24,7 +24,7 @@
         android:layout_marginVertical="8dp"
         android:background="@drawable/rounded_edittext"
         android:orientation="horizontal"
-        tools:context=".SearchActivity">
+        tools:context=".presentation.search.SearchActivity">
 
         <EditText
             android:id="@+id/searchField"
@@ -156,6 +156,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="350dp"
             android:text="@string/update"
+            android:foreground="?attr/selectableItemBackground"
             android:visibility="invisible" />
     </FrameLayout>
 

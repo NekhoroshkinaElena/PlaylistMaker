@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:stateListAnimator="@null"
     android:theme="@style/Base.Theme.PlaylistMaker"
-    tools:context=".SettingsActivity">
+    tools:context=".presentation.setting.SettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
         style="@style/toolbarStyle"
