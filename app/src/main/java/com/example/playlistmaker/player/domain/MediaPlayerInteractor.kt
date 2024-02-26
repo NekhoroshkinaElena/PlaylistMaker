@@ -1,11 +1,11 @@
 package com.example.playlistmaker.player.domain
 
-import com.example.playlistmaker.player.domain.model.PlayerState
+import com.example.playlistmaker.player.domain.models.PlayerState
 
 interface MediaPlayerInteractor {
-    fun preparePlayer(runnable: Runnable)
+    fun preparePlayer()
 
-    fun playbackControl(start: Runnable, stop: Runnable)
+    fun playbackControl()
 
     fun startPlayer()
 
@@ -16,10 +16,4 @@ interface MediaPlayerInteractor {
     fun getState(): PlayerState
 
     fun getCurrentPosition(): String
-
-    fun loadTrackData(id: Int?, loadComplete: LoadComplete)
-
-    interface LoadComplete{
-        fun complete(onComplete: Any)
-    }
 }

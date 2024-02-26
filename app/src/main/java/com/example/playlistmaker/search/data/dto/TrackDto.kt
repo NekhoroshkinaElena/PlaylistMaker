@@ -10,5 +10,5 @@ data class TrackDto(
     val primaryGenreName: String?,
     val collectionName: String?,
     val country: String?,
-    val previewUrl: String
+    val previewUrl: String?
 )

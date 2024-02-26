@@ -2,16 +2,16 @@ package com.example.playlistmaker.player.domain.impl
 
 import com.example.playlistmaker.player.domain.MediaPlayerInteractor
 import com.example.playlistmaker.player.domain.TrackPlayer
-import com.example.playlistmaker.player.domain.model.PlayerState
+import com.example.playlistmaker.player.domain.models.PlayerState
 
-class TrackPlayerInteractorImpl(private val player: TrackPlayer): MediaPlayerInteractor {
+class TrackPlayerInteractorImpl(private val player: TrackPlayer) : MediaPlayerInteractor {
 
-    override fun preparePlayer(runnable: Runnable) {
-        player.preparePlayer(runnable)
+    override fun preparePlayer() {
+        player.preparePlayer()
     }
 
-    override fun playbackControl(start: Runnable, stop: Runnable) {
-        player.playbackControl(start, stop)
+    override fun playbackControl() {
+        player.playbackControl()
     }
 
     override fun startPlayer() {
@@ -27,14 +27,10 @@ class TrackPlayerInteractorImpl(private val player: TrackPlayer): MediaPlayerInt
     }
 
     override fun getState(): PlayerState {
-       return player.getState()
+        return player.getState()
     }
 
     override fun getCurrentPosition(): String {
         return player.getCurrentPosition()
-    }
-
-    override fun loadTrackData(id: Int?, loadComplete: MediaPlayerInteractor.LoadComplete) {
-        TODO("Not yet implemented")
     }
 }

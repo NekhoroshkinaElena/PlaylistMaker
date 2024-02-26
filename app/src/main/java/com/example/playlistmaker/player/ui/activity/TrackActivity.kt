@@ -1,9 +1,6 @@
 package com.example.playlistmaker.player.ui.activity
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -11,10 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
-import com.example.playlistmaker.player.domain.MediaPlayerInteractor
-import com.example.playlistmaker.player.domain.model.PlayerState
 import com.example.playlistmaker.player.ui.models.TrackScreenState
 import com.example.playlistmaker.player.ui.view_model.TrackViewModel
 import com.example.playlistmaker.search.domain.model.Track
@@ -26,21 +20,9 @@ const val IMAGE_CORNER_RADIUS = 8
 
 class TrackActivity : AppCompatActivity() {
 
-    companion object {
-        private const val TIME_UPDATE_DELAY = 500L
-    }
-
     private lateinit var binding: ActivityAudioPlayerBinding
 
-    private lateinit var trackPlayer: MediaPlayerInteractor
-
-
     private lateinit var viewModel: TrackViewModel
-
-
-    private val handler = Handler(Looper.getMainLooper())
-
-    private val run = timerUpdater()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,10 +36,9 @@ class TrackActivity : AppCompatActivity() {
 
         val track: Track? = intent.getParcelableExtra(TRACK_KEY)
 
-//        viewModel = ViewModelProvider(this,
-//            TrackViewModel.getViewModelFactory(track))[TrackViewModel::class.java]
-
-        trackPlayer = Creator.provideTrackPlayer(track)
+        viewModel = ViewModelProvider(
+            this, TrackViewModel.getViewModelFactory(track)
+        )[TrackViewModel::class.java]
 
         val trackCoverUrl = track?.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
         val trackTime = track?.trackTimeMillis ?: ""
@@ -85,48 +66,63 @@ class TrackActivity : AppCompatActivity() {
             binding.collectionNameValue.isVisible = true
         }
 
-        trackPlayer.preparePlayer {
-            handler.removeCallbacks(run)
-            binding.playTrack.setImageResource(R.drawable.ic_play)
-            binding.trackTime.text =
-                millisecondToMinute(trackPlayer.getCurrentPosition())
-        }
+        viewModel.preparePlayer()
 
         binding.playTrack.setOnClickListener {
-            trackPlayer.playbackControl(
-                start = {
-                    binding.playTrack.setImageResource(R.drawable.ic_button_pause)
-                    handler.post(run)
-                },
-                stop = {
-                    handler.removeCallbacks(run)
-                    binding.playTrack.setImageResource(R.drawable.ic_play)
-                })
+            viewModel.playbackControl()
+        }
+
+        viewModel.getScreenStateMediaPlayer().observe(this) {
+            render(it)
         }
     }
 
     override fun onPause() {
         super.onPause()
-        trackPlayer.pausePlayer()
-        handler.removeCallbacks(run)
-        binding.playTrack.setImageResource(R.drawable.ic_play)
+        viewModel.pausePlayer()
     }
 
     override fun onDestroy() {
-        handler.removeCallbacks(run)
         super.onDestroy()
-        trackPlayer.releasePlayer()
+        viewModel.releasePlayer()
     }
 
-    private fun timerUpdater(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                if (trackPlayer.getState() == PlayerState.PLAYING) {
-                    binding.trackTime.text =
-                        millisecondToMinute(trackPlayer.getCurrentPosition())
-                    handler.postDelayed(this, TIME_UPDATE_DELAY)
-                }
+    private fun render(trackScreenState: TrackScreenState) {
+        when (trackScreenState) {
+            is TrackScreenState.Loading -> {
+                preparePlayer()
+            }
+
+            is TrackScreenState.Prepared -> {
+                showPrepared(trackScreenState.trackDuration)
+            }
+
+            is TrackScreenState.Play -> {
+                showPlayback(trackScreenState.currentPosition)
+            }
+
+            is TrackScreenState.Pause -> {
+                showPause()
             }
         }
+    }
+
+    private fun preparePlayer() {
+        binding.playTrack.isClickable = false
+    }
+
+    private fun showPrepared(currentPosition: String) {
+        binding.playTrack.isClickable = true
+        binding.playTrack.setImageResource(R.drawable.ic_play)
+        binding.trackTime.text = currentPosition
+    }
+
+    private fun showPlayback(currentPosition: String) {
+        binding.playTrack.setImageResource(R.drawable.ic_button_pause)
+        binding.trackTime.text = currentPosition
+    }
+
+    private fun showPause() {
+        binding.playTrack.setImageResource(R.drawable.ic_play)
     }
 }

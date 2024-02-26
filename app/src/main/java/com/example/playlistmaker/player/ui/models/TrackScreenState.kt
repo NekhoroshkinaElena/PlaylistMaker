@@ -1,9 +1,8 @@
 package com.example.playlistmaker.player.ui.models
 
-//состояние экрана имеет два вида, состояние загрузки и показа контента
-sealed class TrackScreenState {
-    object Loading: TrackScreenState()
-    data class Content(
-        val trackModel: TrackModel,
-    ): TrackScreenState()
+sealed interface TrackScreenState {
+    data class Prepared(var trackDuration: String) : TrackScreenState
+    data class Play(var currentPosition: String) : TrackScreenState
+    data class Pause(var currentPosition: String) : TrackScreenState
+    data object Loading : TrackScreenState
 }

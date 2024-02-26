@@ -37,19 +37,16 @@ class RetrofitRequester(private val context: Context) : Requester {
                 Response().apply { resultCode = 400 }
             }
         } catch (e: Exception) {
-            Log.i("TAG", "doRequest: " + "Попали сюда")
             return Response()
         }
     }
 
     private fun isConnected(): Boolean {
-        //для проверки текущего состояния сетевых подключений
         val connectivityManager = context.getSystemService(
             Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         if (capabilities != null) {
             when {
-                //метод возвращает true или false если есть какое-либо подключение
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> return true
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> return true
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> return true

@@ -1,174 +1,230 @@
 package com.example.playlistmaker.search.ui.activity
 
-import android.content.SharedPreferences
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
-import android.graphics.drawable.Drawable
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.search.data.history.SEARCH_HISTORY_KEY
-import com.example.playlistmaker.search.data.history.TrackHistoryStorage
-import com.example.playlistmaker.search.domain.TrackInteractor
+import com.example.playlistmaker.player.ui.activity.TrackActivity
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.search.domain.model.TracksListResult
+import com.example.playlistmaker.search.ui.TRACK_KEY
 import com.example.playlistmaker.search.ui.TrackAdapter
-import com.example.playlistmaker.util.Resource
+import com.example.playlistmaker.search.ui.models.SearchState
+import com.example.playlistmaker.search.ui.view_model.TracksSearchViewModel
 
 const val SEARCH_HISTORY_PREFERENCES = "search_history_preferences"
 
 class SearchActivity : AppCompatActivity() {
 
-    companion object {
-        const val USER_INPUT = "USER_INPUT"
-        const val VALUE_USER_INPUT = ""
-        private const val CLICK_DEBOUNCE_DELAY = 1_000L
-        private const val SEARCH_DEBOUNCE_DELAY = 2_000L
-    }
+    private lateinit var viewModel: TracksSearchViewModel
+    private lateinit var binding: ActivitySearchBinding
+
+    private lateinit var queryInput: EditText
+    private lateinit var textWatcher: TextWatcher
+    private lateinit var searchHistoryGroup: ViewGroup
+    private lateinit var toolbar: Toolbar
+    private lateinit var tracksList: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var placeholderImage: ImageView
+    private lateinit var placeholderMessage: TextView
+    private lateinit var buttonClearHistory: Button
+    private lateinit var clearSearchBar: ImageView
+    private lateinit var tracksHistory: RecyclerView
+    private lateinit var buttonUpdate: Button
+
+    private lateinit var userInput: String
 
     private var isClickAllowed = true
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private var userInput: String = VALUE_USER_INPUT
-
-    private val listTracks = ArrayList<Track>()
-    private val trackAdapter = TrackAdapter(listTracks) { clickDebounce() }
-
-    private val searchHistoryTrack = ArrayList<Track>()
-    private val searchHistoryTrackAdapter = TrackAdapter(searchHistoryTrack) { clickDebounce() }
-
-    private val searchRunnable = Runnable { search() }
-
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        userInput = savedInstanceState.getString(USER_INPUT, VALUE_USER_INPUT)
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1_000L
     }
 
+    private val trackClickListener = object : TrackAdapter.TrackClickListener {
+        override fun onTrackClick(track: Track) {
+            if (clickDebounce()) {
+                val intent = Intent(this@SearchActivity, TrackActivity::class.java)
+                intent.putExtra(TRACK_KEY, track)
+                startActivity(intent)
 
-    private lateinit var tracksInteractor: TrackInteractor
+                viewModel.addTrackToHistory(track)
+            }
+        }
+    }
 
-    private lateinit var listener: OnSharedPreferenceChangeListener
+    private val trackAdapter = TrackAdapter(
+        trackClickListener
+    )
 
-    private lateinit var binding: ActivitySearchBinding
+    private val trackAdapterHistory = TrackAdapter(
+        trackClickListener
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        val sharedPreferences = getSharedPreferences(SEARCH_HISTORY_PREFERENCES, MODE_PRIVATE)
-
-        tracksInteractor = Creator.provideTracksInteractor(TrackHistoryStorage(sharedPreferences), this)
-
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        trackAdapter.setSearchHistory(tracksInteractor)
+        searchHistoryGroup = binding.searchHistoryGroup
+        toolbar = binding.toolbarSearch
+        queryInput = binding.searchField
+        tracksList = binding.rvTrackList
+        progressBar = binding.progressBar
+        placeholderImage = binding.placeholderImage
+        placeholderMessage = binding.placeholderMessage
+        buttonClearHistory = binding.buttonClearHistory
+        clearSearchBar = binding.clearSearchBar
+        tracksHistory = binding.rvHistoryList
+        buttonUpdate = binding.buttonUpdate
 
-        searchHistoryTrackAdapter.setSearchHistory(tracksInteractor)
 
-        binding.toolbarSearch.setNavigationOnClickListener {
+        viewModel = ViewModelProvider(
+            this, TracksSearchViewModel.getViewModelFactory()
+        )[TracksSearchViewModel::class.java]
+
+        toolbar.setNavigationOnClickListener {
             finish()
         }
 
-        listener = OnSharedPreferenceChangeListener { _: SharedPreferences, key: String? ->
-            if (key == SEARCH_HISTORY_KEY) {
-                searchHistoryTrackAdapter.results = tracksInteractor.getSearchHistory()
-                searchHistoryTrackAdapter.notifyDataSetChanged()
-            }
-        }
-
-        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
-
-        binding.buttonClearHistory.setOnClickListener {
-            tracksInteractor.clearTheHistory()
-            searchHistoryTrack.clear()
-            searchHistoryTrackAdapter.notifyDataSetChanged()
-            binding.searchHistoryGroup.visibility = View.GONE
-        }
-
-        binding.searchField.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.searchField.text.isEmpty() && tracksInteractor.getSearchHistory()
-                    .isNotEmpty()
-            ) {
-                searchHistoryTrack.clear()
-                searchHistoryTrack.addAll(tracksInteractor.getSearchHistory())
-                searchHistoryTrackAdapter.notifyDataSetChanged()
-
-                binding.searchHistoryGroup.visibility = View.VISIBLE
-
-            } else {
-                binding.searchHistoryGroup.visibility = View.GONE
-            }
-        }
-
-        binding.searchField.setText(VALUE_USER_INPUT)
-
-        binding.clearSearchBar.setOnClickListener {
-            searchHistoryTrack.clear()
-            searchHistoryTrack.addAll(tracksInteractor.getSearchHistory())
-            searchHistoryTrackAdapter.notifyDataSetChanged()
-            trackAdapter.notifyDataSetChanged()
-            binding.searchField.setText("")
-            val inputMethodManager =
-                getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(binding.searchField.windowToken, 0)
-            listTracks.clear()
-            hideFailedRequestMessage()
-        }
-
-        val textWatcher = object : TextWatcher {
+        textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.clearSearchBar.visibility = clearButtonVisibility(s)
-                userInput = s.toString()
-                binding.searchHistoryGroup.visibility =
-                    if (binding.searchField.hasFocus() && s?.isEmpty() == true &&
-                        tracksInteractor.getSearchHistory()
-                            .isNotEmpty()
-                    ) {
-                        listTracks.clear()
-                        trackAdapter.notifyDataSetChanged()
-                        View.VISIBLE
-                    } else {
-                        hideFailedRequestMessage()
-                        View.GONE
-                    }
-                searchDebounce()
+                if (s?.isEmpty() == true) {
+                    viewModel.onFocused()
+                } else {
+                    viewModel.searchDebounce(s?.toString() ?: "")
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
             }
         }
 
-        binding.searchField.addTextChangedListener(textWatcher)
-
-        binding.searchField.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                search()
+        queryInput.setOnFocusChangeListener { view, b ->
+            if (b) {
+                viewModel.onFocused()
             }
-            false
         }
 
-        binding.rvTrackList.adapter = trackAdapter
+        buttonClearHistory.setOnClickListener {
+            viewModel.clearHistory()
+        }
 
-        binding.rvHistoryList.adapter = searchHistoryTrackAdapter
+        buttonUpdate.setOnClickListener {
+            viewModel.updateSearch()
+        }
+
+        textWatcher.let { queryInput.addTextChangedListener(it) }
+
+        viewModel.getScreenStateLiveData().observe(this) {
+            render(it)
+        }
+
+        clearSearchBar.setOnClickListener {
+            queryInput.setText("")
+        }
+
+        tracksList.adapter = trackAdapter
+
+        tracksHistory.adapter = trackAdapterHistory
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(USER_INPUT, userInput)
+    private fun render(state: SearchState) {
+        when (state) {
+            is SearchState.Unfocused -> showUnfocused()
+            is SearchState.Loading -> showLoading()
+            is SearchState.Content -> showContent(state.tracks)
+            is SearchState.Empty -> showEmpty()
+            is SearchState.Error -> showError()
+            is SearchState.History -> showHistory(state.tracks)
+        }
+    }
+
+    private fun showUnfocused() {
+        searchHistoryGroup.isVisible = false
+        tracksList.isVisible = false
+        progressBar.isVisible = false
+        placeholderMessage.isVisible = false
+        placeholderImage.isVisible = false
+        buttonUpdate.isVisible = false
+    }
+
+    private fun showContent(tracks: List<Track>) {
+        Log.i("TAG", "showContent: $tracks")
+        tracksList.isVisible = true
+        searchHistoryGroup.isVisible = false
+        progressBar.isVisible = false
+        placeholderMessage.isVisible = false
+        placeholderImage.isVisible = false
+        trackAdapter.tracks.clear()
+        trackAdapter.tracks.addAll(tracks)
+        trackAdapter.notifyDataSetChanged()
+        buttonUpdate.isVisible = false
+    }
+
+    private fun showLoading() {
+        tracksList.isVisible = false
+        searchHistoryGroup.isVisible = false
+        progressBar.isVisible = true
+        placeholderMessage.isVisible = false
+        placeholderImage.isVisible = false
+        buttonUpdate.isVisible = false
+    }
+
+    private fun showHistory(tracks: List<Track>) {
+        tracksList.isVisible = false
+        searchHistoryGroup.isVisible = true
+        progressBar.isVisible = false
+        placeholderMessage.isVisible = false
+        placeholderImage.isVisible = false
+
+        trackAdapterHistory.tracks.clear()
+        trackAdapterHistory.tracks.addAll(tracks)
+        trackAdapterHistory.notifyDataSetChanged()
+        buttonUpdate.isVisible = false
+    }
+
+    private fun showError() {
+        tracksList.isVisible = false
+        searchHistoryGroup.isVisible = false
+        progressBar.isVisible = false
+        placeholderMessage.text = getString(R.string.something_went_wrong)
+        placeholderImage.setImageDrawable(getDrawable(R.drawable.ic_something_went_wrong))
+        placeholderMessage.isVisible = true
+        placeholderImage.isVisible = true
+        buttonUpdate.isVisible = true
+    }
+
+    private fun showEmpty() {
+        tracksList.isVisible = false
+        searchHistoryGroup.isVisible = false
+        progressBar.isVisible = false
+        placeholderMessage.text = getString(R.string.nothing_found)
+        placeholderImage.setImageDrawable(getDrawable(R.drawable.ic_not_found))
+        placeholderMessage.isVisible = true
+        placeholderImage.isVisible = true
+        buttonUpdate.isVisible = false
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -179,44 +235,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun search() {
-        if (userInput.isEmpty()) return
-        listTracks.clear()
-        trackAdapter.notifyDataSetChanged()
-        binding.progressBar.isVisible = true
-        tracksInteractor.searchTrack(userInput, consumer)
-    }
-
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-    }
-
-    private fun showResponse(text: String, image: Drawable?) {
-        if (text.isEmpty()) {
-            hideFailedRequestMessage()
-
-        } else {
-            binding.placeholderMessage.visibility = View.VISIBLE
-            binding.placeholderImage.visibility = View.VISIBLE
-        }
-        when (text) {
-            getString(R.string.something_went_wrong) -> {
-                binding.buttonUpdate.visibility = View.VISIBLE
-            }
-
-            else -> binding.buttonUpdate.visibility = View.GONE
-        }
-        listTracks.clear()
-        trackAdapter.notifyDataSetChanged()
-        binding.placeholderMessage.text = text
-        binding.placeholderImage.setImageDrawable(image)
-        binding.buttonUpdate.setOnClickListener {
-            hideFailedRequestMessage()
-            search()
-        }
-    }
-
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
@@ -224,42 +242,5 @@ class SearchActivity : AppCompatActivity() {
             handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
         }
         return current
-    }
-
-    private fun hideFailedRequestMessage() {
-        binding.placeholderMessage.visibility = View.GONE
-        binding.buttonUpdate.visibility = View.GONE
-        binding.placeholderImage.visibility = View.GONE
-    }
-
-    private val consumer = object : TrackInteractor.TracksConsumer {
-        override fun consume(tracksListResult: TracksListResult) {
-            handler.post {
-                binding.progressBar.isVisible = false
-
-                if (tracksListResult.codeResponse == 200) {
-                    if (tracksListResult.tracks.isEmpty()) {
-                        showResponse(
-                            getString(R.string.nothing_found),
-                            getDrawable(R.drawable.ic_not_found)
-                        )
-                    } else {
-                        showResponse("", null)
-                        listTracks.addAll(tracksListResult.tracks)
-                        trackAdapter.notifyDataSetChanged()
-                    }
-                } else if (tracksListResult.codeResponse == 404) {
-                    showResponse(
-                        getString(R.string.nothing_found),
-                        getDrawable(R.drawable.ic_not_found)
-                    )
-                } else {
-                    showResponse(
-                        getString(R.string.something_went_wrong),
-                        getDrawable(R.drawable.ic_something_went_wrong)
-                    )
-                }
-            }
-        }
     }
 }

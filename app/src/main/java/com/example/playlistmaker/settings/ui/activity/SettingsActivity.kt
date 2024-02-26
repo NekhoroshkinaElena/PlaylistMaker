@@ -1,34 +1,38 @@
 package com.example.playlistmaker.settings.ui.activity
 
-import android.content.Intent
 import android.content.res.Configuration
-import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.creator.App
-import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import com.example.playlistmaker.settings.domain.model.ThemeSettings
+import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
+
+    private lateinit var viewModel: SettingsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
-            binding.themeSwitch.isChecked = (resources.configuration.uiMode and
-                    Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-        } else {
-            binding.themeSwitch.isChecked =
-                AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+        viewModel = ViewModelProvider(
+            this,
+            SettingsViewModel.getViewModelFactory()
+        )[SettingsViewModel::class.java]
+
+        viewModel.getThemeSettings()
+
+        viewModel.getStateThemeApp().observe(this) {
+            render(it)
         }
 
         binding.themeSwitch.setOnClickListener {
-            (applicationContext as App).switchTheme(binding.themeSwitch.isChecked)
+            viewModel.updateTheme(binding.themeSwitch.isChecked)
             recreate()
         }
 
@@ -37,28 +41,31 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         binding.shareButton.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.type = "text/plain" +
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.android_developer))
-            startActivity(Intent.createChooser(shareIntent, getString(R.string.share)))
+            viewModel.shareApp()
         }
 
         binding.supportButton.setOnClickListener {
-            val message = getString(R.string.message_for_developer)
-            val shareIntent = Intent(Intent.ACTION_SENDTO)
-            shareIntent.data = Uri.parse("mailto:")
-            shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.your_email)))
-            shareIntent.putExtra(Intent.EXTRA_TEXT, message)
-            shareIntent.putExtra(
-                Intent.EXTRA_SUBJECT, getString(R.string.subject_message)
-            )
-            startActivity(shareIntent)
+            viewModel.openSupport()
         }
 
         binding.agreementButton.setOnClickListener {
-            val agreementIntent = Intent(Intent.ACTION_VIEW)
-            agreementIntent.data = Uri.parse(getString(R.string.practicum_offer))
-            startActivity(agreementIntent)
+            viewModel.openTerms()
+        }
+    }
+
+    private fun render(themeSettings: ThemeSettings) {
+        when (themeSettings) {
+            is ThemeSettings.SystemTheme -> {
+                binding.themeSwitch.isChecked = themeSettings.isChecked
+            }
+
+            is ThemeSettings.LightTheme -> {
+                binding.themeSwitch.isChecked = false
+            }
+
+            is ThemeSettings.DarkTheme -> {
+                binding.themeSwitch.isChecked = true
+            }
         }
     }
 

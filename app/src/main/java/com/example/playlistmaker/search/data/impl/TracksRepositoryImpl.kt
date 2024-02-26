@@ -17,13 +17,13 @@ class TracksRepositoryImpl(private val requester: Requester) : TrackRepository {
                     it.trackId,
                     it.trackName,
                     it.artistName,
-                    it.trackTimeMillis?:"",
+                    it.trackTimeMillis ?: "",
                     it.artworkUrl100,
                     it.releaseDate,
-                    it.primaryGenreName?:"",
-                    it.collectionName?:"",
-                    it.country?:"",
-                    it.previewUrl
+                    it.primaryGenreName ?: "",
+                    it.collectionName ?: "",
+                    it.country ?: "",
+                    it.previewUrl ?: ""
                 )
             }
             return TracksListResult(list, response.resultCode)

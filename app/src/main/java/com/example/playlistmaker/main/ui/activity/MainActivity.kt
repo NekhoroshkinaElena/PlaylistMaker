@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.databinding.ActivityMainBinding
-import com.example.playlistmaker.mediateka.activity.LibraryActivity
+import com.example.playlistmaker.mediateka.ui.activity.LibraryActivity
 import com.example.playlistmaker.search.ui.activity.SearchActivity
 import com.example.playlistmaker.settings.ui.activity.SettingsActivity
 

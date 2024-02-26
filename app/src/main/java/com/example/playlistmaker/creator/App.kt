@@ -35,10 +35,7 @@ class App : Application() {
     }
 
     fun hasRecordInSharedPreferences(): Boolean {
-        if (sharedPrefs.contains(THEME_SWITCH_KEY)) {
-            return true
-        }
-        return false
+        return sharedPrefs.contains(THEME_SWITCH_KEY)
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {

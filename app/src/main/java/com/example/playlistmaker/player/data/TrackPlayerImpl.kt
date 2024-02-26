@@ -2,7 +2,7 @@ package com.example.playlistmaker.player.data
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.player.domain.TrackPlayer
-import com.example.playlistmaker.player.domain.model.PlayerState
+import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.search.domain.model.Track
 
 class TrackPlayerImpl(private val track: Track?) : TrackPlayer {
@@ -11,7 +11,7 @@ class TrackPlayerImpl(private val track: Track?) : TrackPlayer {
 
     private val mediaPlayer = MediaPlayer()
 
-    override fun preparePlayer(runnable: Runnable) {
+    override fun preparePlayer() {
         mediaPlayer.setDataSource(track?.previewUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
@@ -20,17 +20,14 @@ class TrackPlayerImpl(private val track: Track?) : TrackPlayer {
         mediaPlayer.setOnCompletionListener {
             playerState = PlayerState.PREPARED
             mediaPlayer.seekTo(0)
-            runnable.run()
         }
     }
 
-    override fun playbackControl(start: Runnable, stop: Runnable) {
+    override fun playbackControl() {
         if (playerState == PlayerState.PLAYING) {
             pausePlayer()
-            stop.run()
         } else if (playerState == PlayerState.PREPARED || playerState == PlayerState.PAUSED) {
             startPlayer()
-            start.run()
         }
     }
 

@@ -1,24 +1,17 @@
 package com.example.playlistmaker.search.ui
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.TrackViewBinding
-import com.example.playlistmaker.search.domain.TrackInteractor
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.player.ui.activity.TrackActivity
 
 const val TRACK_KEY = "track"
 
-class TrackAdapter(var results: ArrayList<Track>, val clickDebounce: () -> Boolean) :
+class TrackAdapter(private val clickListener: TrackClickListener) :
     RecyclerView.Adapter<TrackViewHolder>() {
 
-    private lateinit var trackInteractor: TrackInteractor
-
-    fun setSearchHistory(trackInteractor: TrackInteractor) {
-        this.trackInteractor = trackInteractor
-    }
+    var tracks = ArrayList<Track>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater
@@ -28,22 +21,19 @@ class TrackAdapter(var results: ArrayList<Track>, val clickDebounce: () -> Boole
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        val track: Track = results[position]
+        val track: Track = tracks[position]
         holder.bind(track)
 
-        val context = holder.itemView.context
         holder.itemView.setOnClickListener {
-            if (clickDebounce()) {
-                val intent = Intent(context, TrackActivity::class.java)
-                intent.putExtra(TRACK_KEY, track)
-                context.startActivity(intent)
-
-                trackInteractor.addTrackToHistory(results[position])
-            }
+            clickListener.onTrackClick(track)
         }
     }
 
     override fun getItemCount(): Int {
-        return results.size
+        return tracks.size
+    }
+
+    interface TrackClickListener {
+        fun onTrackClick(track: Track)
     }
 }

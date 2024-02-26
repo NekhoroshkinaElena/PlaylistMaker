@@ -1,11 +1,11 @@
 package com.example.playlistmaker.player.domain
 
-import com.example.playlistmaker.player.domain.model.PlayerState
+import com.example.playlistmaker.player.domain.models.PlayerState
 
 interface TrackPlayer {
-    fun preparePlayer(runnable: Runnable)
+    fun preparePlayer()
 
-    fun playbackControl(start: Runnable, stop: Runnable)
+    fun playbackControl()
 
     fun startPlayer()
 
@@ -17,4 +17,3 @@ interface TrackPlayer {
 
     fun getCurrentPosition(): String
 }
-

@@ -4,7 +4,6 @@ import com.example.playlistmaker.search.domain.TrackInteractor
 import com.example.playlistmaker.search.domain.TrackRepository
 import com.example.playlistmaker.search.domain.TrackStorage
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.util.Resource
 import java.util.concurrent.Executors
 
 class TracksInteractorImpl(private val trackRepository: TrackRepository,
