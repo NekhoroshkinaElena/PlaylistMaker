@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.creator.App
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
-import com.example.playlistmaker.settings.domain.model.ThemeSettings
+import com.example.playlistmaker.settings.ui.models.ThemeState
 import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
@@ -21,15 +21,12 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(
-            this,
-            SettingsViewModel.getViewModelFactory()
+            this, SettingsViewModel.getViewModelFactory()
         )[SettingsViewModel::class.java]
 
         viewModel.getThemeSettings()
 
-        viewModel.getStateThemeApp().observe(this) {
-            render(it)
-        }
+        viewModel.getStateThemeApp().observe(this) { render(it) }
 
         binding.themeSwitch.setOnClickListener {
             viewModel.updateTheme(binding.themeSwitch.isChecked)
@@ -53,17 +50,17 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun render(themeSettings: ThemeSettings) {
-        when (themeSettings) {
-            is ThemeSettings.SystemTheme -> {
-                binding.themeSwitch.isChecked = themeSettings.isChecked
+    private fun render(themeState: ThemeState) {
+        when (themeState) {
+            is ThemeState.SystemTheme -> {
+                binding.themeSwitch.isChecked = themeState.isChecked
             }
 
-            is ThemeSettings.LightTheme -> {
+            is ThemeState.LightTheme -> {
                 binding.themeSwitch.isChecked = false
             }
 
-            is ThemeSettings.DarkTheme -> {
+            is ThemeState.DarkTheme -> {
                 binding.themeSwitch.isChecked = true
             }
         }

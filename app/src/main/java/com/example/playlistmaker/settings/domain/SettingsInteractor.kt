@@ -1,8 +1,8 @@
 package com.example.playlistmaker.settings.domain
 
-import com.example.playlistmaker.settings.domain.model.ThemeSettings
+import com.example.playlistmaker.settings.ui.models.ThemeState
 
 interface SettingsInteractor {
-    fun getThemeSettings(): ThemeSettings
+    fun getThemeSettings(): ThemeState
     fun updateThemeSetting(isChecked: Boolean)
 }

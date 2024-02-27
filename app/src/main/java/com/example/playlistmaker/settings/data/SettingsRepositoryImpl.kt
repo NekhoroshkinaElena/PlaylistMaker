@@ -7,10 +7,10 @@ import com.example.playlistmaker.creator.App
 import com.example.playlistmaker.creator.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.creator.THEME_SWITCH_KEY
 import com.example.playlistmaker.settings.domain.SettingsRepository
-import com.example.playlistmaker.settings.domain.model.ThemeSettings
+import com.example.playlistmaker.settings.ui.models.ThemeState
 
 class SettingsRepositoryImpl(private val application: Application) : SettingsRepository {
-    override fun getThemeSettings(): ThemeSettings {
+    override fun getThemeSettings(): ThemeState {
         if (!application.getSharedPreferences(
                 PLAYLIST_MAKER_PREFERENCES,
                 Application.MODE_PRIVATE
@@ -19,16 +19,16 @@ class SettingsRepositoryImpl(private val application: Application) : SettingsRep
             if (AppCompatDelegate.getDefaultNightMode()
                 == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
             ) {
-                return ThemeSettings.SystemTheme(
+                return ThemeState.SystemTheme(
                     (application.resources.configuration.uiMode and
                             Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
                 )
             }
         }
         return if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            ThemeSettings.DarkTheme
+            ThemeState.DarkTheme
         } else {
-            ThemeSettings.LightTheme
+            ThemeState.LightTheme
         }
     }
 

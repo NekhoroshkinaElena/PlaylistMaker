@@ -9,7 +9,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.settings.domain.SettingsInteractor
-import com.example.playlistmaker.settings.domain.model.ThemeSettings
+import com.example.playlistmaker.settings.ui.models.ThemeState
 import com.example.playlistmaker.sharing.domain.SharingInteractor
 
 class SettingsViewModel(
@@ -17,7 +17,7 @@ class SettingsViewModel(
     private val settingsInteractor: SettingsInteractor
 ) : ViewModel() {
 
-    private val stateThemeApp: MutableLiveData<ThemeSettings> =
+    private val stateThemeApp: MutableLiveData<ThemeState> =
         MutableLiveData()
 
     companion object {
@@ -32,10 +32,10 @@ class SettingsViewModel(
         }
     }
 
-    fun getStateThemeApp(): MutableLiveData<ThemeSettings> = stateThemeApp
+    fun getStateThemeApp(): MutableLiveData<ThemeState> = stateThemeApp
 
-    private fun render(themeSettings: ThemeSettings) {
-        stateThemeApp.postValue(themeSettings)
+    private fun render(themeState: ThemeState) {
+        stateThemeApp.postValue(themeState)
     }
 
     fun shareApp() {

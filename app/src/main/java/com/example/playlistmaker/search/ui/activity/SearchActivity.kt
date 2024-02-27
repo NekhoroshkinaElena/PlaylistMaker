@@ -25,14 +25,14 @@ import com.example.playlistmaker.player.ui.activity.TrackActivity
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.TRACK_KEY
 import com.example.playlistmaker.search.ui.TrackAdapter
-import com.example.playlistmaker.search.ui.models.SearchState
-import com.example.playlistmaker.search.ui.view_model.TracksSearchViewModel
+import com.example.playlistmaker.search.ui.models.SearchScreenState
+import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 
 const val SEARCH_HISTORY_PREFERENCES = "search_history_preferences"
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: TracksSearchViewModel
+    private lateinit var viewModel: SearchViewModel
     private lateinit var binding: ActivitySearchBinding
 
     private lateinit var queryInput: EditText
@@ -97,8 +97,8 @@ class SearchActivity : AppCompatActivity() {
 
 
         viewModel = ViewModelProvider(
-            this, TracksSearchViewModel.getViewModelFactory()
-        )[TracksSearchViewModel::class.java]
+            this, SearchViewModel.getViewModelFactory()
+        )[SearchViewModel::class.java]
 
         toolbar.setNavigationOnClickListener {
             finish()
@@ -150,14 +150,14 @@ class SearchActivity : AppCompatActivity() {
         tracksHistory.adapter = trackAdapterHistory
     }
 
-    private fun render(state: SearchState) {
+    private fun render(state: SearchScreenState) {
         when (state) {
-            is SearchState.Unfocused -> showUnfocused()
-            is SearchState.Loading -> showLoading()
-            is SearchState.Content -> showContent(state.tracks)
-            is SearchState.Empty -> showEmpty()
-            is SearchState.Error -> showError()
-            is SearchState.History -> showHistory(state.tracks)
+            is SearchScreenState.Unfocused -> showUnfocused()
+            is SearchScreenState.Loading -> showLoading()
+            is SearchScreenState.Content -> showContent(state.tracks)
+            is SearchScreenState.Empty -> showEmpty()
+            is SearchScreenState.Error -> showError()
+            is SearchScreenState.History -> showHistory(state.tracks)
         }
     }
 

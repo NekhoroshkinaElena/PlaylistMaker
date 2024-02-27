@@ -17,11 +17,11 @@ import com.example.playlistmaker.search.domain.TrackInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.model.TracksListResult
 import com.example.playlistmaker.search.ui.activity.SEARCH_HISTORY_PREFERENCES
-import com.example.playlistmaker.search.ui.models.SearchState
+import com.example.playlistmaker.search.ui.models.SearchScreenState
 
-class TracksSearchViewModel(application: Application) : AndroidViewModel(application) {
+class SearchViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var screenStateLiveData = MutableLiveData<SearchState>(SearchState.Unfocused)
+    private var screenStateLiveData = MutableLiveData<SearchScreenState>(SearchScreenState.Unfocused)
 
     private var latestSearchText: String? = null
 
@@ -40,7 +40,7 @@ class TracksSearchViewModel(application: Application) : AndroidViewModel(applica
         private val SEARCH_REQUEST_TOKEN = Any()
         fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                TracksSearchViewModel(
+                SearchViewModel(
                     this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
                             as Application
                 )
@@ -48,7 +48,7 @@ class TracksSearchViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    fun getScreenStateLiveData(): LiveData<SearchState> = screenStateLiveData
+    fun getScreenStateLiveData(): LiveData<SearchScreenState> = screenStateLiveData
 
     fun searchDebounce(changedText: String) {
         if (latestSearchText == changedText) {
@@ -74,7 +74,7 @@ class TracksSearchViewModel(application: Application) : AndroidViewModel(applica
 
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
-            renderState(SearchState.Loading)
+            renderState(SearchScreenState.Loading)
 
             tracksInteractor.searchTrack(newSearchText, object : TrackInteractor.TracksConsumer {
                 override fun consume(tracksListResult: TracksListResult) {
@@ -85,21 +85,21 @@ class TracksSearchViewModel(application: Application) : AndroidViewModel(applica
                     when (tracksListResult.codeResponse) {
                         200 -> {
                             if (tracks.isNotEmpty()) {
-                                renderState(SearchState.Content(tracks))
+                                renderState(SearchScreenState.Content(tracks))
                             } else {
-                                renderState(SearchState.Empty)
+                                renderState(SearchScreenState.Empty)
                             }
                         }
-                        404 -> renderState(SearchState.Empty)
-                        -1 -> renderState(SearchState.Error)
-                        else -> renderState(SearchState.Error)
+                        404 -> renderState(SearchScreenState.Empty)
+                        -1 -> renderState(SearchScreenState.Error)
+                        else -> renderState(SearchScreenState.Error)
                     }
                 }
             })
         }
     }
 
-    private fun renderState(state: SearchState) {
+    private fun renderState(state: SearchScreenState) {
         screenStateLiveData.postValue(state)
     }
 
@@ -109,23 +109,23 @@ class TracksSearchViewModel(application: Application) : AndroidViewModel(applica
 
     fun addTrackToHistory(track: Track) {
         tracksInteractor.addTrackToHistory(track)
-        if (screenStateLiveData.value is SearchState.History) {
-            screenStateLiveData.postValue(SearchState.History(tracksInteractor.getSearchHistory()))
+        if (screenStateLiveData.value is SearchScreenState.History) {
+            screenStateLiveData.postValue(SearchScreenState.History(tracksInteractor.getSearchHistory()))
         }
     }
 
     fun clearHistory() {
         tracksInteractor.clearTheHistory()
-        screenStateLiveData.postValue(SearchState.Unfocused)
+        screenStateLiveData.postValue(SearchScreenState.Unfocused)
     }
 
     fun onFocused() {
         onCleared()
         val list = tracksInteractor.getSearchHistory()
         if (list.isEmpty()) {
-            screenStateLiveData.postValue(SearchState.Unfocused)
+            screenStateLiveData.postValue(SearchScreenState.Unfocused)
         } else {
-            screenStateLiveData.postValue(SearchState.History(list))
+            screenStateLiveData.postValue(SearchScreenState.History(list))
         }
     }
 }
