@@ -13,10 +13,11 @@ import com.example.playlistmaker.player.ui.models.TrackScreenState
 import com.example.playlistmaker.player.ui.view_model.TrackViewModel
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.TRACK_KEY
+import com.example.playlistmaker.util.dpToPx
 import com.example.playlistmaker.util.getYearFromString
 import com.example.playlistmaker.util.millisecondToMinute
 
-const val IMAGE_CORNER_RADIUS = 8
+private const val IMAGE_CORNER_RADIUS = 8f
 
 class TrackActivity : AppCompatActivity() {
 
@@ -49,7 +50,7 @@ class TrackActivity : AppCompatActivity() {
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .placeholder(R.drawable.ic_placeholder_track)
             .centerCrop()
-            .transform(RoundedCorners(IMAGE_CORNER_RADIUS))
+            .transform(RoundedCorners(dpToPx(IMAGE_CORNER_RADIUS, this)))
             .into(binding.trackCover)
 
         binding.trackName.text = track?.trackName

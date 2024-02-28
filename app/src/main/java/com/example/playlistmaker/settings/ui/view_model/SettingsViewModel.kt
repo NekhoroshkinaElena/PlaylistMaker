@@ -1,6 +1,8 @@
 package com.example.playlistmaker.settings.ui.view_model
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -32,7 +34,11 @@ class SettingsViewModel(
         }
     }
 
-    fun getStateThemeApp(): MutableLiveData<ThemeState> = stateThemeApp
+    fun getStateThemeApp(): LiveData<ThemeState> = stateThemeApp
+
+    fun renderCurrentTheme() {
+        render(settingsInteractor.getThemeSettings())
+    }
 
     private fun render(themeState: ThemeState) {
         stateThemeApp.postValue(themeState)
@@ -50,11 +56,12 @@ class SettingsViewModel(
         sharingInteractor.openSupport()
     }
 
-    fun getThemeSettings() {
-        render(settingsInteractor.getThemeSettings())
-    }
-
     fun updateTheme(isChecked: Boolean) {
+        if (isChecked) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
         settingsInteractor.updateThemeSetting(isChecked)
         render(settingsInteractor.getThemeSettings())
     }

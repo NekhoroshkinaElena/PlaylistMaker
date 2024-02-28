@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.creator.App
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.settings.ui.models.ThemeState
 import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
@@ -24,17 +23,20 @@ class SettingsActivity : AppCompatActivity() {
             this, SettingsViewModel.getViewModelFactory()
         )[SettingsViewModel::class.java]
 
-        viewModel.getThemeSettings()
-
-        viewModel.getStateThemeApp().observe(this) { render(it) }
-
-        binding.themeSwitch.setOnClickListener {
-            viewModel.updateTheme(binding.themeSwitch.isChecked)
-            recreate()
-        }
-
         binding.toolbarSettings.setNavigationOnClickListener {
             finish()
+        }
+
+        viewModel.renderCurrentTheme()
+
+        viewModel.getStateThemeApp().observe(this) {
+            render(it)
+        }
+
+        binding.themeSwitch.setOnCheckedChangeListener { button, isChecked ->
+            if (button.isPressed) {
+                viewModel.updateTheme(isChecked)
+            }
         }
 
         binding.shareButton.setOnClickListener {
@@ -68,10 +70,6 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        if (!(applicationContext as App).hasRecordInSharedPreferences()) {
-            binding.themeSwitch.isChecked = (newConfig.uiMode and
-                    Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-            recreate()
-        }
+        recreate()
     }
 }
