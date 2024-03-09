@@ -1,51 +1,27 @@
 package com.example.playlistmaker.search.ui.view_model
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.search.data.history.TrackHistoryStorage
+import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.search.domain.TrackInteractor
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.model.TracksListResult
-import com.example.playlistmaker.search.ui.activity.SEARCH_HISTORY_PREFERENCES
 import com.example.playlistmaker.search.ui.models.SearchScreenState
 
-class SearchViewModel(application: Application) : AndroidViewModel(application) {
+class SearchViewModel(private val tracksInteractor: TrackInteractor) : ViewModel(){
 
     private var screenStateLiveData = MutableLiveData<SearchScreenState>(SearchScreenState.Unfocused)
 
     private var latestSearchText: String? = null
 
     private val handler = Handler(Looper.getMainLooper())
-    private var tracksInteractor: TrackInteractor = Creator.provideTracksInteractor(
-        TrackHistoryStorage(
-            application.getSharedPreferences(
-                SEARCH_HISTORY_PREFERENCES,
-                AppCompatActivity.MODE_PRIVATE
-            )
-        ), application.applicationContext
-    )
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(
-                    this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
-                            as Application
-                )
-            }
-        }
     }
 
     fun getScreenStateLiveData(): LiveData<SearchScreenState> = screenStateLiveData

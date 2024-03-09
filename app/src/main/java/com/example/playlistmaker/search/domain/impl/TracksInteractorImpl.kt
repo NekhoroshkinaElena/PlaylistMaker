@@ -6,8 +6,9 @@ import com.example.playlistmaker.search.domain.TrackStorage
 import com.example.playlistmaker.search.domain.model.Track
 import java.util.concurrent.Executors
 
-class TracksInteractorImpl(private val trackRepository: TrackRepository,
-                           private val trackStorage: TrackStorage
+class TracksInteractorImpl(
+    private val trackRepository: TrackRepository,
+    private val trackStorage: TrackStorage
 ) : TrackInteractor {
 
     private val executor = Executors.newCachedThreadPool()

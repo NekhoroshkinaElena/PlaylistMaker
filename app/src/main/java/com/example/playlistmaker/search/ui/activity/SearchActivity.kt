@@ -27,12 +27,14 @@ import com.example.playlistmaker.search.ui.TRACK_KEY
 import com.example.playlistmaker.search.ui.TrackAdapter
 import com.example.playlistmaker.search.ui.models.SearchScreenState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val SEARCH_HISTORY_PREFERENCES = "search_history_preferences"
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
+
     private lateinit var binding: ActivitySearchBinding
 
     private lateinit var queryInput: EditText
@@ -94,11 +96,6 @@ class SearchActivity : AppCompatActivity() {
         clearSearchBar = binding.clearSearchBar
         tracksHistory = binding.rvHistoryList
         buttonUpdate = binding.buttonUpdate
-
-
-        viewModel = ViewModelProvider(
-            this, SearchViewModel.getViewModelFactory()
-        )[SearchViewModel::class.java]
 
         toolbar.setNavigationOnClickListener {
             finish()
