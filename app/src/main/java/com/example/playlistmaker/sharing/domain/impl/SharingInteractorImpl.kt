@@ -16,4 +16,3 @@ class SharingInteractorImpl(private val externalNavigator: ExternalNavigator) : 
         externalNavigator.openEmail()
     }
 }
-

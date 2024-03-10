@@ -1,5 +1,7 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.player.domain.MediaPlayerInteractor
+import com.example.playlistmaker.player.domain.impl.TrackPlayerInteractorImpl
 import com.example.playlistmaker.search.domain.TrackInteractor
 import com.example.playlistmaker.search.domain.impl.TracksInteractorImpl
 import com.example.playlistmaker.settings.domain.SettingsInteractor
@@ -9,15 +11,19 @@ import com.example.playlistmaker.sharing.domain.impl.SharingInteractorImpl
 import org.koin.dsl.module
 
 val interactorModule = module {
-    single<TrackInteractor> {
-        TracksInteractorImpl(get(), get())
+    factory<TrackInteractor> {
+        TracksInteractorImpl(trackRepository = get(), trackStorage = get())
     }
 
-    single<SettingsInteractor> {
-        SettingsInteractorImpl(get())
+    factory<SettingsInteractor> {
+        SettingsInteractorImpl(settingsRepository = get())
     }
 
-    single<SharingInteractor> {
-        SharingInteractorImpl(get())
+    factory<SharingInteractor> {
+        SharingInteractorImpl(externalNavigator = get())
+    }
+
+    factory<MediaPlayerInteractor> {
+        TrackPlayerInteractorImpl(player = get())
     }
 }

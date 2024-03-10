@@ -5,11 +5,12 @@ import com.example.playlistmaker.player.domain.TrackPlayer
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.search.domain.model.Track
 
-class TrackPlayerImpl(private val track: Track?) : TrackPlayer {
+class TrackPlayerImpl(
+    private val track: Track?,
+    private val mediaPlayer: MediaPlayer
+) : TrackPlayer {
 
     private var playerState = PlayerState.DEFAULT
-
-    private val mediaPlayer = MediaPlayer()
 
     override fun preparePlayer() {
         mediaPlayer.setDataSource(track?.previewUrl)

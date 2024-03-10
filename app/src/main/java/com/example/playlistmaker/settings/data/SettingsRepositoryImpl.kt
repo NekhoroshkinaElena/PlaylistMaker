@@ -1,23 +1,22 @@
 package com.example.playlistmaker.settings.data
 
 import android.app.Application
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.settings.domain.SettingsRepository
 import com.example.playlistmaker.settings.ui.models.ThemeState
 
-private const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
+const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
 private const val THEME_SWITCH_KEY = "theme_switch_key"
 
-class SettingsRepositoryImpl(private val application: Application) : SettingsRepository {
-
-    private val sharedPrefs: SharedPreferences =
-        application.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+class SettingsRepositoryImpl(
+    private val settingsPrefs: SharedPreferences,
+    private val application: Application
+) : SettingsRepository {
 
     override fun getThemeSettings(): ThemeState {
-        if (!sharedPrefs.contains(THEME_SWITCH_KEY)
+        if (!settingsPrefs.contains(THEME_SWITCH_KEY)
         ) {
             if (AppCompatDelegate.getDefaultNightMode()
                 == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
@@ -29,13 +28,13 @@ class SettingsRepositoryImpl(private val application: Application) : SettingsRep
             }
         }
 
-        return when (sharedPrefs.getBoolean(THEME_SWITCH_KEY, false)) {
+        return when (settingsPrefs.getBoolean(THEME_SWITCH_KEY, false)) {
             true -> ThemeState.DarkTheme
             false -> ThemeState.LightTheme
         }
     }
 
     override fun updateThemeSetting(isChecked: Boolean) {
-        sharedPrefs.edit().putBoolean(THEME_SWITCH_KEY, isChecked).apply()
+        settingsPrefs.edit().putBoolean(THEME_SWITCH_KEY, isChecked).apply()
     }
 }

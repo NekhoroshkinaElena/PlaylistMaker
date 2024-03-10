@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.app.Application
 import android.content.res.Configuration
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.interactorModule
@@ -15,7 +16,6 @@ import org.koin.core.context.startKoin
 
 
 class TracksApplication : Application() {
-    private val settingsInteractor: SettingsInteractor by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -24,6 +24,8 @@ class TracksApplication : Application() {
             androidContext(this@TracksApplication)
             modules(dataModule, repositoryModule, interactorModule, viewModelModule)
         }
+
+        val settingsInteractor: SettingsInteractor by inject()
 
         when (settingsInteractor.getThemeSettings()) {
             is ThemeState.SystemTheme -> {

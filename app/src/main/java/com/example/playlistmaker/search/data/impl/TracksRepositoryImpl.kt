@@ -15,11 +15,11 @@ class TracksRepositoryImpl(private val requester: Requester) : TrackRepository {
             val list: List<Track> = (response as TrackResponse).results.map {
                 Track(
                     it.trackId,
-                    it.trackName,
-                    it.artistName,
+                    it.trackName ?: "",
+                    it.artistName ?: "",
                     it.trackTimeMillis ?: "",
-                    it.artworkUrl100,
-                    it.releaseDate,
+                    it.artworkUrl100 ?: "",
+                    it.releaseDate ?: "",
                     it.primaryGenreName ?: "",
                     it.collectionName ?: "",
                     it.country ?: "",
