@@ -28,8 +28,6 @@ import com.example.playlistmaker.search.ui.models.SearchScreenState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-const val SEARCH_HISTORY_PREFERENCES = "search_history_preferences"
-
 class SearchActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<SearchViewModel>()

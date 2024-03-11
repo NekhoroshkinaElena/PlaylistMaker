@@ -7,7 +7,6 @@ import com.example.playlistmaker.player.domain.TrackPlayer
 import com.example.playlistmaker.search.data.Requester
 import com.example.playlistmaker.search.data.network.RetrofitRequester
 import com.example.playlistmaker.search.data.network.TrackApiService
-import com.example.playlistmaker.search.ui.activity.SEARCH_HISTORY_PREFERENCES
 import com.example.playlistmaker.sharing.data.ExternalNavigatorImpl
 import com.example.playlistmaker.sharing.domain.ExternalNavigator
 import com.google.gson.Gson
@@ -18,6 +17,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
+const val SEARCH_HISTORY_PREFERENCES = "search_history_preferences"
 
 val dataModule = module {
 
