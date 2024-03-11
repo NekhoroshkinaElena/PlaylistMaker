@@ -49,8 +49,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var tracksHistory: RecyclerView
     private lateinit var buttonUpdate: Button
 
-    private lateinit var userInput: String
-
     private var isClickAllowed = true
 
     private val handler = Handler(Looper.getMainLooper())

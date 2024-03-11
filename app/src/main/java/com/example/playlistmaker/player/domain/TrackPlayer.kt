@@ -11,6 +11,8 @@ interface TrackPlayer {
 
     fun pausePlayer()
 
+    fun onChangedConfig()
+
     fun releasePlayer()
 
     fun getState(): PlayerState

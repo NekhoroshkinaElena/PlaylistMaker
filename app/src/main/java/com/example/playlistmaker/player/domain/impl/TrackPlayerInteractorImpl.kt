@@ -26,6 +26,10 @@ class TrackPlayerInteractorImpl(private val player: TrackPlayer) : MediaPlayerIn
         player.releasePlayer()
     }
 
+    override fun onChangeConfig() {
+        player.onChangedConfig()
+    }
+
     override fun getState(): PlayerState {
         return player.getState()
     }

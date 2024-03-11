@@ -16,7 +16,6 @@ class TrackViewModel(
     private var mediaPlayerInteractor: MediaPlayerInteractor
 ) : ViewModel() {
 
-
     companion object {
         private val MEDIA_PLAYER_TOKEN = Any()
         private const val TIME_UPDATE_DELAY = 500L
@@ -34,8 +33,7 @@ class TrackViewModel(
         screenStateMediaPlayer.postValue(state)
     }
 
-    private fun preparePlayer() {
-        mediaPlayerInteractor.preparePlayer()
+    fun preparePlayer() {
         renderState(
             TrackScreenState.Prepared(
                 millisecondToMinute(track?.trackTimeMillis ?: "")
@@ -48,12 +46,16 @@ class TrackViewModel(
         run.run()
     }
 
-    fun releasePlayer() {
+    private fun releasePlayer() {
         mediaPlayerInteractor.releasePlayer()
     }
 
     fun pausePlayer() {
         mediaPlayerInteractor.pausePlayer()
+    }
+
+    fun onChangeConfig(){
+        mediaPlayerInteractor.onChangeConfig()
     }
 
     private fun timerUpdater(): Runnable {
@@ -67,7 +69,6 @@ class TrackViewModel(
                     )
                     handler.postDelayed(this, MEDIA_PLAYER_TOKEN, TIME_UPDATE_DELAY)
                 } else if (mediaPlayerInteractor.getState() == PlayerState.PREPARED) {
-
                     handler.removeCallbacks(this, MEDIA_PLAYER_TOKEN)
                     renderState(
                         TrackScreenState
@@ -90,6 +91,6 @@ class TrackViewModel(
     }
 
     init {
-        preparePlayer()
+        mediaPlayerInteractor.preparePlayer()
     }
 }

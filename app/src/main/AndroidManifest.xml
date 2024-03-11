@@ -29,6 +29,7 @@
         <activity
             android:name=".player.ui.activity.TrackActivity"
             android:exported="false"
+            android:configChanges="uiMode"
             android:screenOrientation="portrait"
             />
         <activity

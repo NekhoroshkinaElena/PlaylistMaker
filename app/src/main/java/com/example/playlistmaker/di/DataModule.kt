@@ -5,12 +5,9 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.player.data.TrackPlayerImpl
 import com.example.playlistmaker.player.domain.TrackPlayer
 import com.example.playlistmaker.search.data.Requester
-import com.example.playlistmaker.search.data.history.TrackHistoryStorage
 import com.example.playlistmaker.search.data.network.RetrofitRequester
 import com.example.playlistmaker.search.data.network.TrackApiService
-import com.example.playlistmaker.search.domain.TrackStorage
 import com.example.playlistmaker.search.ui.activity.SEARCH_HISTORY_PREFERENCES
-import com.example.playlistmaker.settings.data.PLAYLIST_MAKER_PREFERENCES
 import com.example.playlistmaker.sharing.data.ExternalNavigatorImpl
 import com.example.playlistmaker.sharing.domain.ExternalNavigator
 import com.google.gson.Gson
@@ -19,6 +16,8 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
+const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
 
 val dataModule = module {
 
@@ -30,22 +29,18 @@ val dataModule = module {
             .create(TrackApiService::class.java)
     }
 
-    single(named("historyPrefs")) {
+    single(named(SEARCH_HISTORY_PREFERENCES)) {
         androidContext()
             .getSharedPreferences(SEARCH_HISTORY_PREFERENCES, Context.MODE_PRIVATE)
     }
 
-    single(named("settingsPrefs")) {
+    single(named(PLAYLIST_MAKER_PREFERENCES)) {
         androidContext()
             .getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, Context.MODE_PRIVATE)
     }
 
     single<Requester> {
         RetrofitRequester(trackApiService = get(), context = androidContext())
-    }
-
-    single<TrackStorage> {
-        TrackHistoryStorage(historyPrefs = get(named("historyPrefs")), get())
     }
 
     single<ExternalNavigator> {

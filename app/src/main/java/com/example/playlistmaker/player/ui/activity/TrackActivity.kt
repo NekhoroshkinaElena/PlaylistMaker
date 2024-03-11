@@ -70,6 +70,8 @@ class TrackActivity : AppCompatActivity() {
             binding.collectionNameValue.isVisible = true
         }
 
+        viewModel.preparePlayer()
+
         binding.playTrack.setOnClickListener {
             viewModel.playbackControl()
         }
@@ -121,5 +123,11 @@ class TrackActivity : AppCompatActivity() {
 
     private fun showPause() {
         binding.playTrack.setImageResource(R.drawable.ic_play)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        viewModel.onChangeConfig()
+        recreate()
     }
 }

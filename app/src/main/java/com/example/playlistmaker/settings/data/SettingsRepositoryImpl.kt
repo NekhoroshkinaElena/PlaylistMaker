@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.settings.domain.SettingsRepository
 import com.example.playlistmaker.settings.ui.models.ThemeState
 
-const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
 private const val THEME_SWITCH_KEY = "theme_switch_key"
 
 class SettingsRepositoryImpl(
