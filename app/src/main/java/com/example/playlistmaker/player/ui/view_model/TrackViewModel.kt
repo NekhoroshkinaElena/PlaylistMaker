@@ -2,34 +2,26 @@ package com.example.playlistmaker.player.ui.view_model
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.player.domain.MediaPlayerInteractor
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.player.ui.models.TrackScreenState
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.util.millisecondToMinute
 
-class TrackViewModel(private val track: Track?) : ViewModel() {
+class TrackViewModel(
+    private var track: Track?,
+    private var mediaPlayerInteractor: MediaPlayerInteractor
+) : ViewModel() {
 
     companion object {
         private val MEDIA_PLAYER_TOKEN = Any()
         private const val TIME_UPDATE_DELAY = 500L
-        fun getViewModelFactory(track: Track?): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                TrackViewModel(track)
-            }
-        }
     }
 
     private val handler = Handler(Looper.getMainLooper())
-
-    private val mediaPlayerInteractor = Creator.provideTrackPlayerInteractor(track)
 
     private val screenStateMediaPlayer = MutableLiveData<TrackScreenState>(TrackScreenState.Loading)
 
@@ -42,7 +34,6 @@ class TrackViewModel(private val track: Track?) : ViewModel() {
     }
 
     fun preparePlayer() {
-        mediaPlayerInteractor.preparePlayer()
         renderState(
             TrackScreenState.Prepared(
                 millisecondToMinute(track?.trackTimeMillis ?: "")
@@ -55,12 +46,16 @@ class TrackViewModel(private val track: Track?) : ViewModel() {
         run.run()
     }
 
-    fun releasePlayer() {
+    private fun releasePlayer() {
         mediaPlayerInteractor.releasePlayer()
     }
 
     fun pausePlayer() {
         mediaPlayerInteractor.pausePlayer()
+    }
+
+    fun onChangeConfig(){
+        mediaPlayerInteractor.onChangeConfig()
     }
 
     private fun timerUpdater(): Runnable {
@@ -74,7 +69,6 @@ class TrackViewModel(private val track: Track?) : ViewModel() {
                     )
                     handler.postDelayed(this, MEDIA_PLAYER_TOKEN, TIME_UPDATE_DELAY)
                 } else if (mediaPlayerInteractor.getState() == PlayerState.PREPARED) {
-
                     handler.removeCallbacks(this, MEDIA_PLAYER_TOKEN)
                     renderState(
                         TrackScreenState
@@ -82,7 +76,6 @@ class TrackViewModel(private val track: Track?) : ViewModel() {
                     )
                 } else if (mediaPlayerInteractor.getState() == PlayerState.PAUSED) {
                     handler.removeCallbacks(this, MEDIA_PLAYER_TOKEN)
-                    Log.i("TAG", "run: " + "мы смогли попасть сюда")
                     renderState(
                         TrackScreenState
                             .Pause(millisecondToMinute(mediaPlayerInteractor.getCurrentPosition()))
@@ -94,5 +87,10 @@ class TrackViewModel(private val track: Track?) : ViewModel() {
 
     override fun onCleared() {
         handler.removeCallbacksAndMessages(MEDIA_PLAYER_TOKEN)
+        releasePlayer()
+    }
+
+    init {
+        mediaPlayerInteractor.preparePlayer()
     }
 }

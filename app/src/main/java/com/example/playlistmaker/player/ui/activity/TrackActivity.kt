@@ -1,9 +1,10 @@
 package com.example.playlistmaker.player.ui.activity
 
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -16,6 +17,8 @@ import com.example.playlistmaker.search.ui.TRACK_KEY
 import com.example.playlistmaker.util.dpToPx
 import com.example.playlistmaker.util.getYearFromString
 import com.example.playlistmaker.util.millisecondToMinute
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 private const val IMAGE_CORNER_RADIUS = 8f
 
@@ -23,23 +26,23 @@ class TrackActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAudioPlayerBinding
 
-    private lateinit var viewModel: TrackViewModel
+    private var track: Track? = null
+
+
+    private val viewModel: TrackViewModel by viewModel {
+        parametersOf(track)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         binding.toolbarAudioPlayerScreen.setNavigationOnClickListener() {
             finish()
         }
 
-        val track: Track? = intent.getParcelableExtra(TRACK_KEY)
-
-        viewModel = ViewModelProvider(
-            this, TrackViewModel.getViewModelFactory(track)
-        )[TrackViewModel::class.java]
+        track = intent.getParcelableExtra(TRACK_KEY)
 
         val trackCoverUrl = track?.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
         val trackTime = track?.trackTimeMillis ?: ""
@@ -83,11 +86,6 @@ class TrackActivity : AppCompatActivity() {
         viewModel.pausePlayer()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.releasePlayer()
-    }
-
     private fun render(trackScreenState: TrackScreenState) {
         when (trackScreenState) {
             is TrackScreenState.Loading -> {
@@ -125,5 +123,11 @@ class TrackActivity : AppCompatActivity() {
 
     private fun showPause() {
         binding.playTrack.setImageResource(R.drawable.ic_play)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        viewModel.onChangeConfig()
+        recreate()
     }
 }

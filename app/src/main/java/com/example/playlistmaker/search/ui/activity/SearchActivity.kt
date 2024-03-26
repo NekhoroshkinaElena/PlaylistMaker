@@ -17,7 +17,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
@@ -27,12 +26,12 @@ import com.example.playlistmaker.search.ui.TRACK_KEY
 import com.example.playlistmaker.search.ui.TrackAdapter
 import com.example.playlistmaker.search.ui.models.SearchScreenState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
-
-const val SEARCH_HISTORY_PREFERENCES = "search_history_preferences"
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
+
     private lateinit var binding: ActivitySearchBinding
 
     private lateinit var queryInput: EditText
@@ -47,8 +46,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearSearchBar: ImageView
     private lateinit var tracksHistory: RecyclerView
     private lateinit var buttonUpdate: Button
-
-    private lateinit var userInput: String
 
     private var isClickAllowed = true
 
@@ -94,11 +91,6 @@ class SearchActivity : AppCompatActivity() {
         clearSearchBar = binding.clearSearchBar
         tracksHistory = binding.rvHistoryList
         buttonUpdate = binding.buttonUpdate
-
-
-        viewModel = ViewModelProvider(
-            this, SearchViewModel.getViewModelFactory()
-        )[SearchViewModel::class.java]
 
         toolbar.setNavigationOnClickListener {
             finish()

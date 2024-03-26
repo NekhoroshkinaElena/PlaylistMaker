@@ -1,15 +1,31 @@
-package com.example.playlistmaker.creator
+package com.example.playlistmaker
 
 import android.app.Application
 import android.content.res.Configuration
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.di.dataModule
+import com.example.playlistmaker.di.interactorModule
+import com.example.playlistmaker.di.repositoryModule
+import com.example.playlistmaker.di.viewModelModule
+import com.example.playlistmaker.settings.domain.SettingsInteractor
 import com.example.playlistmaker.settings.ui.models.ThemeState
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
-class App : Application() {
+
+class TracksApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val settingsInteractor = Creator.provideSettingsInteractor(this)
+
+        startKoin {
+            androidContext(this@TracksApplication)
+            modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+        }
+
+        val settingsInteractor: SettingsInteractor by inject()
 
         when (settingsInteractor.getThemeSettings()) {
             is ThemeState.SystemTheme -> {

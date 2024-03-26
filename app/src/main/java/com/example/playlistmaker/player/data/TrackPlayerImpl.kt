@@ -5,11 +5,12 @@ import com.example.playlistmaker.player.domain.TrackPlayer
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.search.domain.model.Track
 
-class TrackPlayerImpl(private val track: Track?) : TrackPlayer {
+class TrackPlayerImpl(
+    private val track: Track?,
+    private val mediaPlayer: MediaPlayer
+) : TrackPlayer {
 
     private var playerState = PlayerState.DEFAULT
-
-    private val mediaPlayer = MediaPlayer()
 
     override fun preparePlayer() {
         mediaPlayer.setDataSource(track?.previewUrl)
@@ -26,6 +27,8 @@ class TrackPlayerImpl(private val track: Track?) : TrackPlayer {
     override fun playbackControl() {
         if (playerState == PlayerState.PLAYING) {
             pausePlayer()
+        } else if (playerState == PlayerState.CHANGED_CONFIG) {
+            startPlayer()
         } else if (playerState == PlayerState.PREPARED || playerState == PlayerState.PAUSED) {
             startPlayer()
         }
@@ -37,8 +40,23 @@ class TrackPlayerImpl(private val track: Track?) : TrackPlayer {
     }
 
     override fun pausePlayer() {
-        playerState = PlayerState.PAUSED
-        mediaPlayer.pause()
+        if (getState() == PlayerState.PREPARED) {
+            return
+        } else if (playerState == PlayerState.CHANGED_CONFIG) {
+            playerState = if(getCurrentPosition().toInt() == 0){
+                PlayerState.CHANGED_CONFIG
+            } else {
+                PlayerState.PLAYING
+            }
+        } else {
+            playerState = PlayerState.PAUSED
+            mediaPlayer.pause()
+        }
+
+    }
+
+    override fun onChangedConfig() {
+        playerState = PlayerState.CHANGED_CONFIG
     }
 
     override fun releasePlayer() {
