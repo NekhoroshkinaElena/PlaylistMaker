@@ -50,9 +50,10 @@ class TrackPlayerImpl(
             }
         } else {
             playerState = PlayerState.PAUSED
-            mediaPlayer.pause()
+            if(mediaPlayer.isPlaying){
+                mediaPlayer.pause()
+            }
         }
-
     }
 
     override fun onChangedConfig() {
