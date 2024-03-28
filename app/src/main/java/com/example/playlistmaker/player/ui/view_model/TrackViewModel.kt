@@ -2,6 +2,7 @@ package com.example.playlistmaker.player.ui.view_model
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,6 +27,10 @@ class TrackViewModel(
     private val screenStateMediaPlayer = MutableLiveData<TrackScreenState>(TrackScreenState.Loading)
 
     private val run = timerUpdater()
+
+    init {
+        mediaPlayerInteractor.preparePlayer()
+    }
 
     fun getScreenStateMediaPlayer(): LiveData<TrackScreenState> = screenStateMediaPlayer
 
@@ -61,6 +66,7 @@ class TrackViewModel(
     private fun timerUpdater(): Runnable {
         return object : Runnable {
             override fun run() {
+                Log.i("TAG2", "run: " + mediaPlayerInteractor.getState())
                 if (mediaPlayerInteractor.getState() == PlayerState.PLAYING) {
                     renderState(
                         TrackScreenState.Play(
@@ -88,9 +94,5 @@ class TrackViewModel(
     override fun onCleared() {
         handler.removeCallbacksAndMessages(MEDIA_PLAYER_TOKEN)
         releasePlayer()
-    }
-
-    init {
-        mediaPlayerInteractor.preparePlayer()
     }
 }

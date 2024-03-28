@@ -25,6 +25,7 @@
         Проверьте подключение к интернету</string>
     <string name="nothing_found">Ничего не нашлось</string>
     <string name="update">Обновить</string>
+    <string name="new_playlist">Новый плейлист</string>
     <string name="go_to_the_track">Переходим к треку</string>
     <string name="you_were_looking_for">Вы искали</string>
     <string name="clear_history">Очистить историю</string>
@@ -33,4 +34,8 @@
     <string name="year">Год</string>
     <string name="genre">Жанр</string>
     <string name="country">Страна</string>
+    <string name="playlists_have_not_been_created">Вы не создали \n ни одного плейлиста</string>
+    <string name="your_media_library_empty">Ваша медиатека пуста</string>
+    <string name="favorites">Избранные треки</string>
+    <string name="playlists">Плейлисты</string>
 </resources>
