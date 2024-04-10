@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search.ui.activity
+package com.example.playlistmaker.search.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -14,12 +14,12 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.player.ui.activity.TrackActivity
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.TRACK_KEY
@@ -28,12 +28,15 @@ import com.example.playlistmaker.search.ui.models.SearchScreenState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
+
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1_000L
+    }
+
+    private lateinit var binding: FragmentSearchBinding
 
     private val viewModel by viewModel<SearchViewModel>()
-
-    private lateinit var binding: ActivitySearchBinding
-
     private lateinit var queryInput: EditText
     private lateinit var textWatcher: TextWatcher
     private lateinit var searchHistoryGroup: ViewGroup
@@ -45,20 +48,17 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var buttonClearHistory: Button
     private lateinit var clearSearchBar: ImageView
     private lateinit var tracksHistory: RecyclerView
+
     private lateinit var buttonUpdate: Button
 
     private var isClickAllowed = true
 
     private val handler = Handler(Looper.getMainLooper())
 
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1_000L
-    }
-
     private val trackClickListener = object : TrackAdapter.TrackClickListener {
         override fun onTrackClick(track: Track) {
             if (clickDebounce()) {
-                val intent = Intent(this@SearchActivity, TrackActivity::class.java)
+                val intent = Intent(requireContext(), TrackActivity::class.java)
                 intent.putExtra(TRACK_KEY, track)
                 startActivity(intent)
 
@@ -75,10 +75,17 @@ class SearchActivity : AppCompatActivity() {
         trackClickListener
     )
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         searchHistoryGroup = binding.searchHistoryGroup
         toolbar = binding.toolbarSearch
@@ -92,9 +99,6 @@ class SearchActivity : AppCompatActivity() {
         tracksHistory = binding.rvHistoryList
         buttonUpdate = binding.buttonUpdate
 
-        toolbar.setNavigationOnClickListener {
-            finish()
-        }
 
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -113,7 +117,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        queryInput.setOnFocusChangeListener { view, b ->
+        queryInput.setOnFocusChangeListener { _, b ->
             if (b) {
                 viewModel.onFocused()
             }
@@ -129,7 +133,7 @@ class SearchActivity : AppCompatActivity() {
 
         textWatcher.let { queryInput.addTextChangedListener(it) }
 
-        viewModel.getScreenStateLiveData().observe(this) {
+        viewModel.getScreenStateLiveData().observe(viewLifecycleOwner) {
             render(it)
         }
 
@@ -163,7 +167,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showContent(tracks: List<Track>) {
-        Log.i("TAG", "showContent: $tracks")
         tracksList.isVisible = true
         searchHistoryGroup.isVisible = false
         progressBar.isVisible = false
@@ -202,7 +205,7 @@ class SearchActivity : AppCompatActivity() {
         searchHistoryGroup.isVisible = false
         progressBar.isVisible = false
         placeholderMessage.text = getString(R.string.something_went_wrong)
-        placeholderImage.setImageDrawable(getDrawable(R.drawable.ic_something_went_wrong))
+        placeholderImage.setImageDrawable(requireContext().getDrawable(R.drawable.ic_something_went_wrong))
         placeholderMessage.isVisible = true
         placeholderImage.isVisible = true
         buttonUpdate.isVisible = true
@@ -213,7 +216,7 @@ class SearchActivity : AppCompatActivity() {
         searchHistoryGroup.isVisible = false
         progressBar.isVisible = false
         placeholderMessage.text = getString(R.string.nothing_found)
-        placeholderImage.setImageDrawable(getDrawable(R.drawable.ic_not_found))
+        placeholderImage.setImageDrawable(requireContext().getDrawable(R.drawable.ic_not_found))
         placeholderMessage.isVisible = true
         placeholderImage.isVisible = true
         buttonUpdate.isVisible = false
