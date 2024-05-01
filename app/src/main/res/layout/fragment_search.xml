@@ -8,12 +8,11 @@
     android:orientation="vertical"
     android:stateListAnimator="@null"
     android:theme="@style/Base.Theme.PlaylistMaker"
-    tools:context=".settings.ui.activity.SettingsActivity">
+    tools:context=".search.ui.fragment.SearchFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_search"
         style="@style/toolbarStyle"
-        app:navigationIcon="@drawable/ic_arrow_back"
         app:title="@string/search"
         app:titleTextColor="?attr/colorOnPrimary" />
 

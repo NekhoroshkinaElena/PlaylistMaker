@@ -8,12 +8,11 @@
     android:orientation="vertical"
     android:stateListAnimator="@null"
     android:theme="@style/Base.Theme.PlaylistMaker"
-    tools:context=".settings.ui.activity.SettingsActivity">
+    tools:context=".settings.ui.fragment.SettingsFragment">
 
     <androidx.appcompat.widget.Toolbar
         style="@style/toolbarStyle"
         android:id="@+id/toolbar_settings"
-        app:navigationIcon="@drawable/ic_arrow_back"
         app:title="@string/setting"
         app:titleTextColor="?attr/colorOnPrimary" />
 

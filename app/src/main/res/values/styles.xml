@@ -124,7 +124,7 @@
         <item name="layout_constraintHorizontal_bias">1</item>
         <item name="layout_constrainedWidth">true</item>
     </style>
-    
+
     <style name="ysMedium14">
         <item name="fontFamily">@font/ys_display_medium</item>
         <item name="android:textSize">14sp</item>
@@ -140,5 +140,13 @@
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textFontWeight">@integer/width_500</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+
+    <style name="bottomNavigationText">
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textFontWeight">@integer/width_400</item>
+        <item name="itemTextAppearanceActive">@color/YP_blue</item>
     </style>
 </resources>
