@@ -25,12 +25,14 @@ class TrackPlayerImpl(
     }
 
     override fun playbackControl() {
-        if (playerState == PlayerState.PLAYING) {
-            pausePlayer()
-        } else if (playerState == PlayerState.CHANGED_CONFIG) {
-            startPlayer()
-        } else if (playerState == PlayerState.PREPARED || playerState == PlayerState.PAUSED) {
-            startPlayer()
+        when (playerState) {
+            PlayerState.PLAYING -> pausePlayer()
+            PlayerState.PAUSED, PlayerState.PREPARED -> startPlayer()
+            PlayerState.CHANGED_CONFIG -> {
+                startPlayer()
+            }
+
+            else -> {}
         }
     }
 
@@ -40,19 +42,13 @@ class TrackPlayerImpl(
     }
 
     override fun pausePlayer() {
-        if (getState() == PlayerState.PREPARED) {
-            return
-        } else if (playerState == PlayerState.CHANGED_CONFIG) {
-            playerState = if(getCurrentPosition().toInt() == 0){
-                PlayerState.CHANGED_CONFIG
-            } else {
-                PlayerState.PLAYING
-            }
+        playerState = if (getState() == PlayerState.CHANGED_CONFIG) {
+            PlayerState.CHANGED_CONFIG
         } else {
-            playerState = PlayerState.PAUSED
-            if(mediaPlayer.isPlaying){
-                mediaPlayer.pause()
-            }
+            PlayerState.PAUSED
+        }
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.pause()
         }
     }
 
@@ -61,7 +57,9 @@ class TrackPlayerImpl(
     }
 
     override fun releasePlayer() {
+        mediaPlayer.stop()
         mediaPlayer.release()
+        playerState = PlayerState.DEFAULT
     }
 
     override fun getState(): PlayerState {

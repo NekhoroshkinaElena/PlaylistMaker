@@ -2,8 +2,6 @@ package com.example.playlistmaker.search.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -17,6 +15,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
@@ -26,6 +25,7 @@ import com.example.playlistmaker.search.ui.TRACK_KEY
 import com.example.playlistmaker.search.ui.TrackAdapter
 import com.example.playlistmaker.search.ui.models.SearchScreenState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
+import com.example.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -53,16 +53,18 @@ class SearchFragment : Fragment() {
 
     private var isClickAllowed = true
 
-    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var onTrackClickDebounce: (Track) -> Unit
 
     private val trackClickListener = object : TrackAdapter.TrackClickListener {
         override fun onTrackClick(track: Track) {
-            if (clickDebounce()) {
+            if (isClickAllowed) {
+                isClickAllowed = false
                 val intent = Intent(requireContext(), TrackActivity::class.java)
                 intent.putExtra(TRACK_KEY, track)
                 startActivity(intent)
 
                 viewModel.addTrackToHistory(track)
+                onTrackClickDebounce(track)
             }
         }
     }
@@ -99,6 +101,12 @@ class SearchFragment : Fragment() {
         tracksHistory = binding.rvHistoryList
         buttonUpdate = binding.buttonUpdate
 
+        onTrackClickDebounce = debounce(
+            CLICK_DEBOUNCE_DELAY,
+            viewLifecycleOwner.lifecycleScope, false
+        ) {
+            isClickAllowed = true
+        }
 
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -228,14 +236,5 @@ class SearchFragment : Fragment() {
         } else {
             View.VISIBLE
         }
-    }
-
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
     }
 }

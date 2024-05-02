@@ -1,8 +1,12 @@
 package com.example.playlistmaker.player.ui.models
 
-sealed interface TrackScreenState {
-    data class Prepared(var trackDuration: String) : TrackScreenState
-    data class Play(var currentPosition: String) : TrackScreenState
-    data class Pause(var currentPosition: String) : TrackScreenState
-    data object Loading : TrackScreenState
+sealed class TrackScreenState(
+    val isPlayButtonEnabled: Boolean,
+    val isPlayButtonActive: Boolean,
+    val currentPosition: String
+) {
+    class Default : TrackScreenState(false, true, "00:00")
+    class Prepared(currentPosition: String) : TrackScreenState(true, true, currentPosition)
+    class Playing(currentPosition: String) : TrackScreenState(true, false, currentPosition)
+    class Paused(currentPosition: String) : TrackScreenState(true, true, currentPosition)
 }
