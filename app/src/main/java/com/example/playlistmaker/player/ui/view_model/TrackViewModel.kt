@@ -18,10 +18,6 @@ class TrackViewModel(
     private var mediaPlayerInteractor: MediaPlayerInteractor
 ) : ViewModel() {
 
-    companion object {
-        private const val TIME_UPDATE_DELAY = 300L
-    }
-
     private val screenStateMediaPlayer =
         MutableLiveData<TrackScreenState>(TrackScreenState.Default())
 
@@ -95,5 +91,9 @@ class TrackViewModel(
 
     private fun getTime(): String {
         return millisecondToMinute(mediaPlayerInteractor.getCurrentPosition())
+    }
+
+    companion object {
+        private const val TIME_UPDATE_DELAY = 300L
     }
 }

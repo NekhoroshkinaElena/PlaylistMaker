@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.Group
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -30,16 +31,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
 
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1_000L
-    }
-
     private lateinit var binding: FragmentSearchBinding
 
     private val viewModel by viewModel<SearchViewModel>()
     private lateinit var queryInput: EditText
     private lateinit var textWatcher: TextWatcher
-    private lateinit var searchHistoryGroup: ViewGroup
+    private lateinit var searchHistoryGroup: Group
     private lateinit var toolbar: Toolbar
     private lateinit var tracksList: RecyclerView
     private lateinit var progressBar: ProgressBar
@@ -116,9 +113,8 @@ class SearchFragment : Fragment() {
                 binding.clearSearchBar.visibility = clearButtonVisibility(s)
                 if (s?.isEmpty() == true) {
                     viewModel.onFocused()
-                } else {
-                    viewModel.searchDebounce(s?.toString() ?: "")
                 }
+                viewModel.searchDebounce(s?.toString() ?: "")
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -236,5 +232,9 @@ class SearchFragment : Fragment() {
         } else {
             View.VISIBLE
         }
+    }
+
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1_000L
     }
 }

@@ -13,12 +13,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayListFragment : Fragment() {
 
-    companion object {
-        fun newInstance(): Fragment {
-            return PlayListFragment()
-        }
-    }
-
     private val playlistViewModel: PlaylistViewModel by viewModel()
 
     private lateinit var binding: FragmentPlaylistBinding
@@ -48,5 +42,11 @@ class PlayListFragment : Fragment() {
     private fun showEmpty() {
         binding.message.isVisible = true
         binding.placeholderImage.isVisible = true
+    }
+
+    companion object {
+        fun newInstance(): Fragment {
+            return PlayListFragment()
+        }
     }
 }

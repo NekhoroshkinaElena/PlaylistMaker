@@ -23,10 +23,6 @@ class SearchViewModel(private val tracksInteractor: TrackInteractor) : ViewModel
             searchRequest(changedText)
         }
 
-    companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-    }
-
     fun getScreenStateLiveData(): LiveData<SearchScreenState> = screenStateLiveData
 
     fun searchDebounce(changedText: String) {
@@ -98,5 +94,9 @@ class SearchViewModel(private val tracksInteractor: TrackInteractor) : ViewModel
         } else {
             screenStateLiveData.postValue(SearchScreenState.History(list))
         }
+    }
+
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }

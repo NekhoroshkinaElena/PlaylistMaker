@@ -7,13 +7,6 @@
     android:background="?attr/colorPrimary"
     tools:context=".player.ui.activity.TrackActivity">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/centerVerticalBorder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarAudioPlayerScreen"
         style="@style/toolbarStyle"
@@ -45,12 +38,12 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginVertical="24dp"
-        app:layout_constraintBottom_toTopOf="@id/centerVerticalBorder"
+        app:layout_constraintBottom_toTopOf="@id/trackName"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbarAudioPlayerScreen"
+        app:layout_constraintVertical_bias="0.583"
         tools:src="@drawable/ic_placeholder_track" />
 
     <TextView
@@ -66,7 +59,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTag="trackName"
-        app:layout_constraintTop_toBottomOf="@id/centerVerticalBorder"
         tools:text="Yesterday (Remastered 2009)" />
 
     <TextView
