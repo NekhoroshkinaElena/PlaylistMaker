@@ -1,35 +1,35 @@
 package com.example.playlistmaker.player.ui.view_model
 
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.player.domain.MediaPlayerInteractor
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.player.ui.models.TrackScreenState
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.util.millisecondToMinute
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class TrackViewModel(
     private var track: Track?,
     private var mediaPlayerInteractor: MediaPlayerInteractor
 ) : ViewModel() {
 
-    companion object {
-        private val MEDIA_PLAYER_TOKEN = Any()
-        private const val TIME_UPDATE_DELAY = 500L
-    }
+    private val screenStateMediaPlayer =
+        MutableLiveData<TrackScreenState>(TrackScreenState.Default())
 
-    private val handler = Handler(Looper.getMainLooper())
-
-    private val screenStateMediaPlayer = MutableLiveData<TrackScreenState>(TrackScreenState.Loading)
-
-    private val run = timerUpdater()
+    private var timerJob: Job? = null
 
     init {
         mediaPlayerInteractor.preparePlayer()
+        renderState(
+            TrackScreenState.Prepared(
+                millisecondToMinute(track?.trackTimeMillis ?: "")
+            )
+        )
     }
 
     fun getScreenStateMediaPlayer(): LiveData<TrackScreenState> = screenStateMediaPlayer
@@ -39,16 +39,18 @@ class TrackViewModel(
     }
 
     fun preparePlayer() {
-        renderState(
-            TrackScreenState.Prepared(
-                millisecondToMinute(track?.trackTimeMillis ?: "")
-            )
-        )
+        if (mediaPlayerInteractor.getState() == PlayerState.CHANGED_CONFIG) {
+            playbackControl()
+        }
     }
 
     fun playbackControl() {
         mediaPlayerInteractor.playbackControl()
-        run.run()
+        when (mediaPlayerInteractor.getState()) {
+            PlayerState.PLAYING -> startTimer()
+            PlayerState.PAUSED -> pausePlayer()
+            else -> {}
+        }
     }
 
     private fun releasePlayer() {
@@ -57,42 +59,41 @@ class TrackViewModel(
 
     fun pausePlayer() {
         mediaPlayerInteractor.pausePlayer()
+        timerJob?.cancel()
+        renderState(
+            TrackScreenState
+                .Paused(getTime())
+        )
     }
 
-    fun onChangeConfig(){
-        mediaPlayerInteractor.onChangeConfig()
-    }
-
-    private fun timerUpdater(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                Log.i("TAG2", "run: " + mediaPlayerInteractor.getState())
-                if (mediaPlayerInteractor.getState() == PlayerState.PLAYING) {
-                    renderState(
-                        TrackScreenState.Play(
-                            millisecondToMinute(mediaPlayerInteractor.getCurrentPosition())
-                        )
-                    )
-                    handler.postDelayed(this, MEDIA_PLAYER_TOKEN, TIME_UPDATE_DELAY)
-                } else if (mediaPlayerInteractor.getState() == PlayerState.PREPARED) {
-                    handler.removeCallbacks(this, MEDIA_PLAYER_TOKEN)
-                    renderState(
-                        TrackScreenState
-                            .Prepared(millisecondToMinute(mediaPlayerInteractor.getCurrentPosition()))
-                    )
-                } else if (mediaPlayerInteractor.getState() == PlayerState.PAUSED) {
-                    handler.removeCallbacks(this, MEDIA_PLAYER_TOKEN)
-                    renderState(
-                        TrackScreenState
-                            .Pause(millisecondToMinute(mediaPlayerInteractor.getCurrentPosition()))
-                    )
-                }
-            }
+    fun onChangeConfig() {
+        if (mediaPlayerInteractor.getState() == PlayerState.PLAYING) {
+            mediaPlayerInteractor.onChangeConfig()
         }
     }
 
     override fun onCleared() {
-        handler.removeCallbacksAndMessages(MEDIA_PLAYER_TOKEN)
+        super.onCleared()
         releasePlayer()
+    }
+
+    private fun startTimer() {
+        timerJob = viewModelScope.launch {
+            while (mediaPlayerInteractor.getState() == PlayerState.PLAYING) {
+                delay(TIME_UPDATE_DELAY)
+                renderState(TrackScreenState.Playing(getTime()))
+            }
+            if (mediaPlayerInteractor.getState() == PlayerState.PREPARED) {
+                renderState(TrackScreenState.Prepared(getTime()))
+            }
+        }
+    }
+
+    private fun getTime(): String {
+        return millisecondToMinute(mediaPlayerInteractor.getCurrentPosition())
+    }
+
+    companion object {
+        private const val TIME_UPDATE_DELAY = 300L
     }
 }

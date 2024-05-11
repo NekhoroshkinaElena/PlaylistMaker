@@ -4,5 +4,5 @@ import com.example.playlistmaker.search.data.dto.Response
 
 interface Requester {
 
-    fun doRequest(dto: Any): Response
+    suspend fun doRequest(dto: Any): Response
 }

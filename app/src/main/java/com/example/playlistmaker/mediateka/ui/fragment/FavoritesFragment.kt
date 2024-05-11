@@ -13,12 +13,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoritesFragment : Fragment() {
 
-    companion object {
-        fun newInstance(): Fragment {
-            return FavoritesFragment()
-        }
-    }
-
     private val aboutViewModel: FavoritesViewModel by viewModel()
 
     private lateinit var binding: FragmentFavoritesBinding
@@ -48,5 +42,11 @@ class FavoritesFragment : Fragment() {
     private fun showEmpty() {
         binding.message.isVisible = true
         binding.placeholderImage.isVisible = true
+    }
+
+    companion object {
+        fun newInstance(): Fragment {
+            return FavoritesFragment()
+        }
     }
 }

@@ -2,7 +2,6 @@ package com.example.playlistmaker.player.ui.activity
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
@@ -27,7 +26,6 @@ class TrackActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioPlayerBinding
 
     private var track: Track? = null
-
 
     private val viewModel: TrackViewModel by viewModel {
         parametersOf(track)
@@ -87,42 +85,11 @@ class TrackActivity : AppCompatActivity() {
     }
 
     private fun render(trackScreenState: TrackScreenState) {
-        when (trackScreenState) {
-            is TrackScreenState.Loading -> {
-                preparePlayer()
-            }
-
-            is TrackScreenState.Prepared -> {
-                showPrepared(trackScreenState.trackDuration)
-            }
-
-            is TrackScreenState.Play -> {
-                showPlayback(trackScreenState.currentPosition)
-            }
-
-            is TrackScreenState.Pause -> {
-                showPause()
-            }
-        }
-    }
-
-    private fun preparePlayer() {
-        binding.playTrack.isClickable = false
-    }
-
-    private fun showPrepared(currentPosition: String) {
-        binding.playTrack.isClickable = true
-        binding.playTrack.setImageResource(R.drawable.ic_play)
-        binding.trackTime.text = currentPosition
-    }
-
-    private fun showPlayback(currentPosition: String) {
-        binding.playTrack.setImageResource(R.drawable.ic_button_pause)
-        binding.trackTime.text = currentPosition
-    }
-
-    private fun showPause() {
-        binding.playTrack.setImageResource(R.drawable.ic_play)
+        binding.playTrack.isEnabled = trackScreenState.isPlayButtonEnabled
+        binding.trackTime.text = trackScreenState.currentPosition
+        binding.playTrack.setImageResource(
+            if (trackScreenState.isPlayButtonActive) R.drawable.ic_play else R.drawable.ic_button_pause
+        )
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
