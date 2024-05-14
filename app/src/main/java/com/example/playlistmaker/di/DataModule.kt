@@ -2,6 +2,9 @@ package com.example.playlistmaker.di
 
 import android.content.Context
 import android.media.MediaPlayer
+import androidx.room.Room
+import com.example.playlistmaker.mediateka.data.db.FavoritesTracksDatabase
+import com.example.playlistmaker.mediateka.data.db.converters.TrackDbConverter
 import com.example.playlistmaker.player.data.TrackPlayerImpl
 import com.example.playlistmaker.player.domain.TrackPlayer
 import com.example.playlistmaker.search.data.Requester
@@ -47,9 +50,19 @@ val dataModule = module {
         ExternalNavigatorImpl(context = androidContext())
     }
 
-    factory <TrackPlayer> {
+    factory<TrackPlayer> {
         TrackPlayerImpl(track = get(), mediaPlayer = get())
     }
+
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            FavoritesTracksDatabase::class.java,
+            "database.db"
+        ).build()
+    }
+
+    factory { TrackDbConverter() }
 
     factory { Gson() }
 

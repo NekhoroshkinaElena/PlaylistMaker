@@ -7,8 +7,10 @@ import com.google.gson.Gson
 
 private const val SEARCH_HISTORY_KEY = "search_history_key"
 
-class TrackHistoryStorage(private val historyPrefs: SharedPreferences, private val gson: Gson) :
-    TrackStorage {
+class TrackHistoryStorage(
+    private val historyPrefs: SharedPreferences,
+    private val gson: Gson
+) : TrackStorage {
     override fun getSearchHistory(): ArrayList<Track> {
         val json = historyPrefs.getString(SEARCH_HISTORY_KEY, null)
             ?: return arrayListOf()
@@ -16,7 +18,6 @@ class TrackHistoryStorage(private val historyPrefs: SharedPreferences, private v
     }
 
     override fun saveSearchHistory(tracks: List<Track>) {
-
         val json = gson.toJson(tracks)
         historyPrefs.edit()
             .putString(SEARCH_HISTORY_KEY, json)

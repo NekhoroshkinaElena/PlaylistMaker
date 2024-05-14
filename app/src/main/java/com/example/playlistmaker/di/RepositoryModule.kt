@@ -1,5 +1,7 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.mediateka.data.impl.FavoritesTrackRepositoryImpl
+import com.example.playlistmaker.mediateka.domain.FavoritesTracksRepository
 import com.example.playlistmaker.search.data.history.TrackHistoryStorage
 import com.example.playlistmaker.search.data.impl.TracksRepositoryImpl
 import com.example.playlistmaker.search.domain.TrackRepository
@@ -15,10 +17,19 @@ val repositoryModule = module {
     }
 
     single<TrackStorage> {
-        TrackHistoryStorage(historyPrefs = get(named(SEARCH_HISTORY_PREFERENCES)), get())
+        TrackHistoryStorage(
+            historyPrefs = get(named(SEARCH_HISTORY_PREFERENCES)), get()
+        )
     }
 
     single<SettingsRepository> {
-        SettingsRepositoryImpl(settingsPrefs = get(named(PLAYLIST_MAKER_PREFERENCES)), application = get())
+        SettingsRepositoryImpl(
+            settingsPrefs = get(named(PLAYLIST_MAKER_PREFERENCES)),
+            application = get()
+        )
+    }
+
+    single<FavoritesTracksRepository> {
+        FavoritesTrackRepositoryImpl(get(), get())
     }
 }

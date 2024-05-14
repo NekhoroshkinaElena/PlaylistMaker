@@ -1,5 +1,7 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.mediateka.domain.FavoritesTracksInteractor
+import com.example.playlistmaker.mediateka.domain.impl.FavoritesTracksInteractorImpl
 import com.example.playlistmaker.player.domain.MediaPlayerInteractor
 import com.example.playlistmaker.player.domain.impl.TrackPlayerInteractorImpl
 import com.example.playlistmaker.search.domain.TrackInteractor
@@ -25,5 +27,9 @@ val interactorModule = module {
 
     factory<MediaPlayerInteractor> {
         TrackPlayerInteractorImpl(player = get())
+    }
+
+    factory<FavoritesTracksInteractor> {
+        FavoritesTracksInteractorImpl(repository = get())
     }
 }
