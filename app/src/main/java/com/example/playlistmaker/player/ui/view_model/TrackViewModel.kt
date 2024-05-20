@@ -30,9 +30,7 @@ class TrackViewModel(
     init {
         mediaPlayerInteractor.preparePlayer()
         renderState(
-            TrackScreenState.Prepared(
-                millisecondToMinute(track?.trackTimeMillis ?: "")
-            )
+            TrackScreenState.Prepared("00:00")
         )
 
         viewModelScope.launch {
