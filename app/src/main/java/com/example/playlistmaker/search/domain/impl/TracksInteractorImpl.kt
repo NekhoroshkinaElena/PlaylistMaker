@@ -25,8 +25,10 @@ class TracksInteractorImpl(
         if (tracks.size >= 10) {
             tracks.removeAt(0)
         }
-        if (tracks.contains(track)) {
-            tracks.remove(track)
+
+        val trackEntity: Track? = tracks.find { it.trackId == track.trackId }
+        if (trackEntity != null) {
+            tracks.remove(trackEntity)
         }
         tracks.add(track)
         trackStorage.saveSearchHistory(tracks)

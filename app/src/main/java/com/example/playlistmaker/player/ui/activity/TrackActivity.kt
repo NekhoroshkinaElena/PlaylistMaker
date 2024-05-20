@@ -74,8 +74,16 @@ class TrackActivity : AppCompatActivity() {
             viewModel.playbackControl()
         }
 
+        binding.addToFavorites.setOnClickListener {
+            viewModel.onClickFavorite()
+        }
+
         viewModel.getScreenStateMediaPlayer().observe(this) {
             render(it)
+        }
+
+        viewModel.getStateIsFavorite().observe(this) {
+            renderIsFavorite(it)
         }
     }
 
@@ -89,6 +97,13 @@ class TrackActivity : AppCompatActivity() {
         binding.trackTime.text = trackScreenState.currentPosition
         binding.playTrack.setImageResource(
             if (trackScreenState.isPlayButtonActive) R.drawable.ic_play else R.drawable.ic_button_pause
+        )
+    }
+
+    private fun renderIsFavorite(isFavorite: Boolean) {
+        binding.addToFavorites.setImageResource(
+            if (isFavorite) R.drawable.ic_delete_from_favorites
+            else R.drawable.ic_add_to_favorites
         )
     }
 

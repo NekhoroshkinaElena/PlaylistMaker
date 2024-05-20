@@ -19,11 +19,11 @@ val viewModelModule = module {
     }
 
     viewModel { (track: Track?) ->
-        TrackViewModel(track, get())
+        TrackViewModel(track, get(), get())
     }
 
-    viewModel{
-        FavoritesViewModel()
+    viewModel {
+        FavoritesViewModel(get(), get())
     }
 
     viewModel {
