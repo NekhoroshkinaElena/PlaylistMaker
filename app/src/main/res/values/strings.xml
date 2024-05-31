@@ -38,4 +38,8 @@
     <string name="your_media_library_empty">Ваша медиатека пуста</string>
     <string name="favorites">Избранные треки</string>
     <string name="playlists">Плейлисты</string>
+    <string name="create">Создать</string>
+    <string name="name">Название*</string>
+    <string name="description">Описание</string>
+    <string name="addToPlaylist">Добавить в плейлист</string>
 </resources>

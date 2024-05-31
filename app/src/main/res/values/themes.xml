@@ -15,5 +15,15 @@
 
         <item name="backgroundForSearch">@color/YP_Light_Gray</item>
         <item name="textColorForTrack">@color/black</item>
+
+        <item name="colorOnTertiary">@color/YP_Light_Gray</item>
+
+        <item name="materialAlertDialogTheme">@style/MaterialAlertDialog</item>
+    </style>
+
+    <style name="MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.App.Title.Text</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.App.Button</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.App.Button</item>
     </style>
 </resources>

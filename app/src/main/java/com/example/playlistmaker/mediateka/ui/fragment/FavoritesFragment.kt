@@ -1,6 +1,5 @@
 package com.example.playlistmaker.mediateka.ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +7,13 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoritesBinding
 import com.example.playlistmaker.mediateka.ui.models.FavoriteState
 import com.example.playlistmaker.mediateka.ui.view_model.FavoritesViewModel
-import com.example.playlistmaker.player.ui.activity.TrackActivity
+import com.example.playlistmaker.player.ui.fragment.TrackFragment
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.search.ui.TRACK_KEY
 import com.example.playlistmaker.search.ui.TrackAdapter
 import com.example.playlistmaker.util.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -32,10 +32,10 @@ class FavoritesFragment : Fragment() {
         override fun onTrackClick(track: Track) {
             if (isClickAllowed) {
                 isClickAllowed = false
-                val intent = Intent(requireContext(), TrackActivity::class.java)
-                intent.putExtra(TRACK_KEY, track)
-                startActivity(intent)
-
+                findNavController().navigate(
+                    R.id.action_libraryFragment_to_trackFragment,
+                    TrackFragment.createArgs(track)
+                )
                 aboutViewModel.addTrackToHistory(track)
                 onTrackClickDebounce(track)
             }
@@ -59,7 +59,7 @@ class FavoritesFragment : Fragment() {
 
         onTrackClickDebounce = debounce(
             CLICK_DEBOUNCE_DELAY,
-            viewLifecycleOwner.lifecycleScope, false
+            requireActivity().lifecycleScope, false
         ) {
             isClickAllowed = true
         }

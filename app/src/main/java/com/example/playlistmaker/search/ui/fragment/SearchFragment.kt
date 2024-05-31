@@ -1,6 +1,5 @@
 package com.example.playlistmaker.search.ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,12 +16,12 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
-import com.example.playlistmaker.player.ui.activity.TrackActivity
+import com.example.playlistmaker.player.ui.fragment.TrackFragment
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.search.ui.TRACK_KEY
 import com.example.playlistmaker.search.ui.TrackAdapter
 import com.example.playlistmaker.search.ui.models.SearchScreenState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
@@ -56,10 +55,11 @@ class SearchFragment : Fragment() {
         override fun onTrackClick(track: Track) {
             if (isClickAllowed) {
                 isClickAllowed = false
-                val intent = Intent(requireContext(), TrackActivity::class.java)
-                intent.putExtra(TRACK_KEY, track)
-                startActivity(intent)
 
+                findNavController().navigate(
+                    R.id.action_searchFragment_to_trackFragment,
+                    TrackFragment.createArgs(track)
+                )
                 viewModel.addTrackToHistory(track)
                 onTrackClickDebounce(track)
             }
@@ -100,7 +100,7 @@ class SearchFragment : Fragment() {
 
         onTrackClickDebounce = debounce(
             CLICK_DEBOUNCE_DELAY,
-            viewLifecycleOwner.lifecycleScope, false
+            requireActivity().lifecycleScope, false
         ) {
             isClickAllowed = true
         }

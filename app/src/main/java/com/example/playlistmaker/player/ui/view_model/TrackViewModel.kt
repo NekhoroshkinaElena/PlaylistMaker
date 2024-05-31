@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.mediateka.domain.FavoritesTracksInteractor
+import com.example.playlistmaker.mediateka.domain.PlaylistsInteractor
+import com.example.playlistmaker.mediateka.domain.model.Playlist
+import com.example.playlistmaker.mediateka.ui.models.PlaylistState
 import com.example.playlistmaker.player.domain.MediaPlayerInteractor
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.player.ui.models.TrackScreenState
@@ -18,12 +21,17 @@ class TrackViewModel(
     private var track: Track?,
     private val mediaPlayerInteractor: MediaPlayerInteractor,
     private val favoritesTracksInteractor: FavoritesTracksInteractor,
+    private val playlistsInteractor: PlaylistsInteractor
 ) : ViewModel() {
 
     private val screenStateMediaPlayer =
         MutableLiveData<TrackScreenState>(TrackScreenState.Default())
 
     private val stateIsFavorite = MutableLiveData<Boolean>()
+
+    private val statePlaylist = MutableLiveData<PlaylistState>()
+
+    private val stateAddTrack = MutableLiveData<Boolean>(null)
 
     private var timerJob: Job? = null
 
@@ -38,10 +46,22 @@ class TrackViewModel(
                 stateIsFavorite.value = ids.contains(track?.trackId)
             }
         }
+
+        viewModelScope.launch {
+            playlistsInteractor.getAllPlaylists().collect { result ->
+                if (result.isEmpty()) {
+                    statePlaylist.postValue(PlaylistState.Empty)
+                } else {
+                    statePlaylist.postValue(PlaylistState.Content(result))
+                }
+            }
+        }
     }
 
     fun getScreenStateMediaPlayer(): LiveData<TrackScreenState> = screenStateMediaPlayer
     fun getStateIsFavorite(): LiveData<Boolean> = stateIsFavorite
+    fun getStatePlaylist(): LiveData<PlaylistState> = statePlaylist
+    fun getStateAddTrack(): LiveData<Boolean> = stateAddTrack
 
     private fun renderState(state: TrackScreenState) {
         screenStateMediaPlayer.postValue(state)
@@ -115,6 +135,17 @@ class TrackViewModel(
                     stateIsFavorite.postValue(true)
                 }
             }
+        }
+    }
+
+    fun addTrackToPlaylist(track: Track?, playlist: Playlist) {
+        if (!playlist.tracksIds.contains(track?.trackId)) {
+            viewModelScope.launch {
+                playlistsInteractor.updatePlaylist(track!!, playlist)
+            }
+            stateAddTrack.postValue(true)
+        } else {
+            stateAddTrack.postValue(false)
         }
     }
 

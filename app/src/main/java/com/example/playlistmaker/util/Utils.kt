@@ -21,3 +21,17 @@ fun dpToPx(dp: Float, context: Context): Int {
         context.resources.displayMetrics
     ).toInt()
 }
+
+fun changeTheEndingOfTheWord(countTrack: Int): String {
+    var num: Int = countTrack
+    if (num > 100) num %= 100
+    if (num in 10..20) return "треков"
+    if (num > 20) num %= 10
+    return if (num == 1) {
+        "трек"
+    } else if (num in 2..4) {
+        "трека"
+    } else {
+        "треков"
+    }
+}
