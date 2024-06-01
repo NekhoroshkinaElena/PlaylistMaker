@@ -142,6 +142,7 @@ class TrackFragment : Fragment() {
                 ).show()
 
                 true -> showSuccess()
+                else -> {}
             }
         }
 

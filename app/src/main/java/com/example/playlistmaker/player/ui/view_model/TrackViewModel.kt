@@ -31,7 +31,7 @@ class TrackViewModel(
 
     private val statePlaylist = MutableLiveData<PlaylistState>()
 
-    private val stateAddTrack = MutableLiveData<Boolean>(null)
+    private val stateAddTrack = MutableLiveData<Boolean?>(null)
 
     private var timerJob: Job? = null
 
@@ -61,7 +61,7 @@ class TrackViewModel(
     fun getScreenStateMediaPlayer(): LiveData<TrackScreenState> = screenStateMediaPlayer
     fun getStateIsFavorite(): LiveData<Boolean> = stateIsFavorite
     fun getStatePlaylist(): LiveData<PlaylistState> = statePlaylist
-    fun getStateAddTrack(): LiveData<Boolean> = stateAddTrack
+    fun getStateAddTrack(): LiveData<Boolean?> = stateAddTrack
 
     private fun renderState(state: TrackScreenState) {
         screenStateMediaPlayer.postValue(state)
@@ -98,6 +98,7 @@ class TrackViewModel(
     fun onChangeConfig() {
         if (mediaPlayerInteractor.getState() == PlayerState.PLAYING) {
             mediaPlayerInteractor.onChangeConfig()
+            stateAddTrack.postValue(null)
         }
     }
 
