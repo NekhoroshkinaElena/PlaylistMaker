@@ -135,11 +135,14 @@ class TrackFragment : Fragment() {
 
         viewModel.getStateAddTrack().observe(viewLifecycleOwner) {
             when (it) {
-                false -> Toast.makeText(
-                    requireActivity(),
-                    "Трек уже присутствует в плейлисте",
-                    Toast.LENGTH_SHORT
-                ).show()
+                false -> {
+                    Toast.makeText(
+                        requireActivity(),
+                        "Трек уже присутствует в плейлисте",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    viewModel.deleteValueStateAddTrack()
+                }
 
                 true -> showSuccess()
                 else -> {}
@@ -205,6 +208,7 @@ class TrackFragment : Fragment() {
             Toast.LENGTH_SHORT
         ).show()
         adapter.notifyDataSetChanged()
+        viewModel.deleteValueStateAddTrack()
     }
 
     companion object {

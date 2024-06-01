@@ -98,7 +98,6 @@ class TrackViewModel(
     fun onChangeConfig() {
         if (mediaPlayerInteractor.getState() == PlayerState.PLAYING) {
             mediaPlayerInteractor.onChangeConfig()
-            stateAddTrack.postValue(null)
         }
     }
 
@@ -148,6 +147,10 @@ class TrackViewModel(
         } else {
             stateAddTrack.postValue(false)
         }
+    }
+
+    fun deleteValueStateAddTrack() {
+        stateAddTrack.postValue(null)
     }
 
     companion object {
