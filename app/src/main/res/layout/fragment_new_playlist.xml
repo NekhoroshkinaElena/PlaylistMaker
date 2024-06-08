@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
+    android:orientation="vertical"
+    tools:context=".mediateka.ui.fragment.NewPlaylistFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.55" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/verticalBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_tags="inputDescriptionLayout" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarNewPlaylist"
+        style="@style/toolbarStyle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="Новый плейлист" />
+
+    <ImageView
+        android:id="@+id/addPhoto"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/add_photo_background"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder_add_photo"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarNewPlaylist"
+        app:layout_constraintVertical_bias="0" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputNameLayout"
+        style="@style/newPlaylistTextInputLayout"
+        android:layout_marginTop="26dp"
+        app:layout_constraintBottom_toTopOf="@id/inputDescriptionLayout"
+        app:layout_constraintTop_toBottomOf="@id/addPhoto">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputName"
+            style="@style/newPlaylistTextInputEditText"
+            android:hint="@string/name" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputDescriptionLayout"
+        style="@style/newPlaylistTextInputLayout"
+        android:layout_marginTop="10dp"
+        android:tag="inputDescriptionLayout"
+        app:layout_constraintTop_toBottomOf="@id/inputNameLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputDescription"
+            style="@style/newPlaylistTextInputEditText"
+            android:hint="@string/description" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/createPlaylist"
+        style="@style/buttonCreateNewPlaylist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="@string/create"
+        android:fontFamily="@font/ys_display_medium"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/verticalBarrier"
+        app:layout_constraintVertical_bias="1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

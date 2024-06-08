@@ -16,4 +16,8 @@
         <item name="tint">@color/YP_black</item>
     </style>
 
+    <style name="bottomSheetRectangle">
+        <item name="backgroundColor">@color/white</item>
+    </style>
+
 </resources>

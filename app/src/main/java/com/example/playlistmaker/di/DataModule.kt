@@ -4,6 +4,8 @@ import android.content.Context
 import android.media.MediaPlayer
 import androidx.room.Room
 import com.example.playlistmaker.mediateka.data.db.FavoritesTracksDatabase
+import com.example.playlistmaker.mediateka.data.db.PlaylistsDatabase
+import com.example.playlistmaker.mediateka.data.db.converters.PlaylistDbConverter
 import com.example.playlistmaker.mediateka.data.db.converters.TrackDbConverter
 import com.example.playlistmaker.player.data.TrackPlayerImpl
 import com.example.playlistmaker.player.domain.TrackPlayer
@@ -62,7 +64,17 @@ val dataModule = module {
         ).build()
     }
 
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            PlaylistsDatabase::class.java,
+            "databasePlaylists.db"
+        ).build()
+    }
+
     factory { TrackDbConverter() }
+
+    factory { PlaylistDbConverter(gson = get()) }
 
     factory { Gson() }
 

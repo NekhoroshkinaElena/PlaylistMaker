@@ -14,5 +14,7 @@
 
         <item name="backgroundForSearch">@color/white</item>
         <item name="textColorForTrack">@color/white</item>
+
+        <item name="colorOnTertiary">@color/white</item>
     </style>
 </resources>

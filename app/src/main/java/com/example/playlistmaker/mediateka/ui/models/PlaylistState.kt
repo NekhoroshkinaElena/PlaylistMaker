@@ -1,10 +1,10 @@
 package com.example.playlistmaker.mediateka.ui.models
 
-import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.mediateka.domain.model.Playlist
 
 sealed interface PlaylistState {
     data class Content(
-        val playList: List<List<Track>>
+        val playList: List<Playlist>
     ) : PlaylistState
 
     data object Empty : PlaylistState
