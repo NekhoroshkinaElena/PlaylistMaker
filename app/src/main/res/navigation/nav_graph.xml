@@ -21,8 +21,8 @@
         android:label="fragment_library"
         tools:layout="@layout/fragment_library" >
         <action
-            android:id="@+id/action_libraryFragment_to_playListFragment"
-            app:destination="@id/playListFragment" />
+            android:id="@+id/action_libraryFragment_to_playListsFragment"
+            app:destination="@id/playListsFragment" />
         <action
             android:id="@+id/action_libraryFragment_to_favoritesFragment"
             app:destination="@id/favoritesFragment" />
@@ -32,6 +32,9 @@
         <action
             android:id="@+id/action_libraryFragment_to_trackFragment"
             app:destination="@id/trackFragment" />
+        <action
+            android:id="@+id/action_libraryFragment_to_playlistFragment2"
+            app:destination="@id/playlistFragment2" />
     </fragment>
 
 
@@ -48,10 +51,10 @@
         tools:layout="@layout/fragment_favorites"/>
 
     <fragment
-        android:id="@+id/playListFragment"
-        android:name="com.example.playlistmaker.mediateka.ui.fragment.PlayListFragment"
-        android:label="fragment_playlist"
-        tools:layout="@layout/fragment_playlist" />
+        android:id="@+id/playListsFragment"
+        android:name="com.example.playlistmaker.mediateka.ui.fragment.PlayListsFragment"
+        android:label="fragment_playlists"
+        tools:layout="@layout/fragment_playlists" />
 
     <fragment
         android:id="@+id/newPlaylistFragment"
@@ -68,6 +71,21 @@
             android:id="@+id/action_trackFragment_to_newPlaylistFragment"
             app:destination="@id/newPlaylistFragment" />
     </fragment>
-
+    <fragment
+        android:id="@+id/playlistFragment2"
+        android:name="com.example.playlistmaker.mediateka.ui.fragment.PlaylistFragment"
+        android:label="fragment_playlist"
+        tools:layout="@layout/fragment_playlist" >
+        <action
+            android:id="@+id/action_playlistFragment2_to_trackFragment"
+            app:destination="@id/trackFragment" />
+        <action
+            android:id="@+id/action_playlistFragment2_to_editPlaylistFragment"
+            app:destination="@id/editPlaylistFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editPlaylistFragment"
+        android:name="com.example.playlistmaker.mediateka.ui.fragment.EditPlaylistFragment"
+        android:label="EditPlaylistFragment" />
 
 </navigation>

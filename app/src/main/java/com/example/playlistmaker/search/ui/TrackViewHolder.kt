@@ -9,7 +9,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.TrackViewBinding
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.util.millisecondToMinute
+import com.example.playlistmaker.util.millisecondToMinutesAndSeconds
 
 class TrackViewHolder(binding: TrackViewBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -28,7 +28,7 @@ class TrackViewHolder(binding: TrackViewBinding) : RecyclerView.ViewHolder(bindi
     fun bind(model: Track) {
         name.text = model.trackName
         artist.text = model.artistName
-        time.text = millisecondToMinute(model.trackTimeMillis)
+        time.text = millisecondToMinutesAndSeconds(model.trackTimeMillis)
         setImage(model.artworkUrl100)
     }
 
