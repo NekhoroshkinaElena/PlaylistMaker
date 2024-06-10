@@ -31,11 +31,21 @@ class HostActivity : AppCompatActivity() {
                 R.id.newPlaylistFragment -> {
                     bottomNavigationView.visibility = View.GONE
                 }
+
                 R.id.trackFragment -> {
                     bottomNavigationView.visibility = View.GONE
                 }
+
+                R.id.playlistFragment2 -> {
+                    bottomNavigationView.visibility = View.GONE
+                }
+
+                R.id.editPlaylistFragment -> {
+                    bottomNavigationView.visibility = View.GONE
+                }
+
                 else -> {
-                bottomNavigationView.visibility = View.VISIBLE
+                    bottomNavigationView.visibility = View.VISIBLE
                 }
             }
         }

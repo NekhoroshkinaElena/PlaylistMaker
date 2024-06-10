@@ -20,10 +20,10 @@ import com.example.playlistmaker.mediateka.ui.view_model.NewPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewPlaylistFragment : Fragment() {
+open class NewPlaylistFragment : Fragment() {
 
-    private lateinit var binding: FragmentNewPlaylistBinding
-    private val playlistViewModel: NewPlaylistViewModel by viewModel()
+    open lateinit var binding: FragmentNewPlaylistBinding
+    open val playlistViewModel: NewPlaylistViewModel by viewModel()
     private var playlistName: String = ""
     private var playlistDescription: String = ""
     private var playlistCoverUri: Uri? = null
@@ -56,7 +56,6 @@ class NewPlaylistFragment : Fragment() {
                     playlistCoverUri = uri
                     binding.addPhoto.setImageURI(uri)
                     binding.addPhoto.clipToOutline = true
-                } else {
                 }
             }
 
@@ -106,11 +105,11 @@ class NewPlaylistFragment : Fragment() {
 
     private fun showConfirmDialog() {
         MaterialAlertDialogBuilder(requireActivity(), R.style.MaterialAlertDialog)
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setNeutralButton("Отмена") { _, _ ->
+            .setTitle(R.string.finish_creating_playlist)
+            .setMessage(R.string.unsaved_data_will_be_lost)
+            .setNeutralButton(R.string.cancel) { _, _ ->
             }
-            .setNegativeButton("Завершить") { _, _ ->
+            .setNegativeButton(R.string.complete) { _, _ ->
                 findNavController().navigateUp()
             }.show()
     }
@@ -129,6 +128,5 @@ class NewPlaylistFragment : Fragment() {
             binding.addPhoto.clipToOutline = true
             playlistCoverUri = savedInstanceState.getString("playlistCover")?.toUri()
         }
-
     }
 }

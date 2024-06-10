@@ -1,6 +1,7 @@
 package com.example.playlistmaker.search.domain.model
 
 import android.os.Parcelable
+import com.example.playlistmaker.util.millisecondToMinutesAndSeconds
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -16,4 +17,9 @@ data class Track(
     val country: String,
     val previewUrl: String,
     var isFavorite: Boolean = false
-) : Parcelable
+) : Parcelable {
+
+    override fun toString(): String {
+        return "$artistName - $trackName (${millisecondToMinutesAndSeconds(trackTimeMillis)})\n"
+    }
+}

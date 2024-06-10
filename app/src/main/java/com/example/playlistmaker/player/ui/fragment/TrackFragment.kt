@@ -17,14 +17,14 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.example.playlistmaker.mediateka.domain.model.Playlist
-import com.example.playlistmaker.mediateka.ui.models.PlaylistState
+import com.example.playlistmaker.mediateka.ui.models.PlaylistsState
 import com.example.playlistmaker.player.ui.TrackPlaylistAdapter
 import com.example.playlistmaker.player.ui.models.TrackScreenState
 import com.example.playlistmaker.player.ui.view_model.TrackViewModel
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.util.dpToPx
 import com.example.playlistmaker.util.getYearFromString
-import com.example.playlistmaker.util.millisecondToMinute
+import com.example.playlistmaker.util.millisecondToMinutesAndSeconds
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -80,8 +80,8 @@ class TrackFragment : Fragment() {
 
         binding.trackName.text = track?.trackName
         binding.artistName.text = track?.artistName
-        binding.trackTime.text = millisecondToMinute(trackTime)
-        binding.trackDurationValue.text = millisecondToMinute(trackTime)
+        binding.trackTime.text = millisecondToMinutesAndSeconds(trackTime)
+        binding.trackDurationValue.text = millisecondToMinutesAndSeconds(trackTime)
         binding.releaseDateValue.text = getYearFromString(track?.releaseDate)
         binding.countryValue.text = track?.country
         binding.genreValue.text = track?.primaryGenreName
@@ -125,7 +125,7 @@ class TrackFragment : Fragment() {
 
         viewModel.getStatePlaylist().observe(viewLifecycleOwner) {
             when (it) {
-                is PlaylistState.Content -> {
+                is PlaylistsState.Content -> {
                     showContent(it.playList)
                 }
 
