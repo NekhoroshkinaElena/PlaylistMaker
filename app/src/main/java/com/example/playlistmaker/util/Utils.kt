@@ -5,8 +5,12 @@ import android.util.TypedValue
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-fun millisecondToMinute(timeInMilliseconds: String): String {
+fun millisecondToMinutesAndSeconds(timeInMilliseconds: String): String {
     return SimpleDateFormat("mm:ss", Locale.getDefault()).format(timeInMilliseconds.toInt())
+}
+
+fun millisecondToMinute(timeInMilliseconds: String): String {
+    return SimpleDateFormat("mm", Locale.getDefault()).format(timeInMilliseconds.toInt())
 }
 
 fun getYearFromString(date: String?): String {
@@ -33,5 +37,19 @@ fun changeTheEndingOfTheWord(countTrack: Int): String {
         "трека"
     } else {
         "треков"
+    }
+}
+
+fun changeTheEndingOfTheWordMinute(countMinute: Int): String {
+    var num: Int = countMinute
+    if (num > 100) num %= 100
+    if (num in 10..20) return "минут"
+    if (num > 20) num %= 10
+    return if (num == 1) {
+        "минута"
+    } else if (num in 2..4) {
+        "минуты"
+    } else {
+        "минут"
     }
 }

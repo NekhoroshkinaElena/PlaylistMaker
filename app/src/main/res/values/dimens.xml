@@ -12,5 +12,6 @@
     <dimen name="left_margin_the_screen">16dp</dimen>
     <dimen name="right_margin_the_screen_setting">12dp</dimen>
     <integer name="width_500">500</integer>
+    <integer name="width_700">700</integer>
     <integer name="width_400">400</integer>
 </resources>

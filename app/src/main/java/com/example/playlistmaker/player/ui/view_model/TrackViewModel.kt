@@ -7,12 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.mediateka.domain.FavoritesTracksInteractor
 import com.example.playlistmaker.mediateka.domain.PlaylistsInteractor
 import com.example.playlistmaker.mediateka.domain.model.Playlist
-import com.example.playlistmaker.mediateka.ui.models.PlaylistState
+import com.example.playlistmaker.mediateka.ui.models.PlaylistsState
 import com.example.playlistmaker.player.domain.MediaPlayerInteractor
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.player.ui.models.TrackScreenState
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.util.millisecondToMinute
+import com.example.playlistmaker.util.millisecondToMinutesAndSeconds
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -29,7 +29,7 @@ class TrackViewModel(
 
     private val stateIsFavorite = MutableLiveData<Boolean>()
 
-    private val statePlaylist = MutableLiveData<PlaylistState>()
+    private val statePlaylist = MutableLiveData<PlaylistsState>()
 
     private val stateAddTrack = MutableLiveData<Boolean?>(null)
 
@@ -50,9 +50,9 @@ class TrackViewModel(
         viewModelScope.launch {
             playlistsInteractor.getAllPlaylists().collect { result ->
                 if (result.isEmpty()) {
-                    statePlaylist.postValue(PlaylistState.Empty)
+                    statePlaylist.postValue(PlaylistsState.Empty(result))
                 } else {
-                    statePlaylist.postValue(PlaylistState.Content(result))
+                    statePlaylist.postValue(PlaylistsState.Content(result))
                 }
             }
         }
@@ -60,7 +60,7 @@ class TrackViewModel(
 
     fun getScreenStateMediaPlayer(): LiveData<TrackScreenState> = screenStateMediaPlayer
     fun getStateIsFavorite(): LiveData<Boolean> = stateIsFavorite
-    fun getStatePlaylist(): LiveData<PlaylistState> = statePlaylist
+    fun getStatePlaylist(): LiveData<PlaylistsState> = statePlaylist
     fun getStateAddTrack(): LiveData<Boolean?> = stateAddTrack
 
     private fun renderState(state: TrackScreenState) {
@@ -119,7 +119,7 @@ class TrackViewModel(
     }
 
     private fun getTime(): String {
-        return millisecondToMinute(mediaPlayerInteractor.getCurrentPosition())
+        return millisecondToMinutesAndSeconds(mediaPlayerInteractor.getCurrentPosition())
     }
 
     fun onClickFavorite() {
@@ -141,7 +141,7 @@ class TrackViewModel(
     fun addTrackToPlaylist(track: Track?, playlist: Playlist) {
         if (!playlist.tracksIds.contains(track?.trackId)) {
             viewModelScope.launch {
-                playlistsInteractor.updatePlaylist(track!!, playlist)
+                playlistsInteractor.updatePlaylistAddTrack(track!!, playlist)
             }
             stateAddTrack.postValue(true)
         } else {

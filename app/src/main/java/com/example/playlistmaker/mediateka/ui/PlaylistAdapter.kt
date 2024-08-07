@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.PlaylistViewMediatekaBinding
 import com.example.playlistmaker.mediateka.domain.model.Playlist
 
-class PlaylistAdapter() : RecyclerView.Adapter<PlaylistViewHolder>() {
+class PlaylistAdapter(private val clickListener: PlaylistClickListener) :
+    RecyclerView.Adapter<PlaylistViewHolder>() {
 
     var playlist = ArrayList<Playlist>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
@@ -23,5 +24,12 @@ class PlaylistAdapter() : RecyclerView.Adapter<PlaylistViewHolder>() {
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         val playlist: Playlist = playlist[position]
         holder.bind(playlist)
+        holder.itemView.setOnClickListener {
+            clickListener.onPlaylistClick(playlist.id)
+        }
+    }
+
+    interface PlaylistClickListener {
+        fun onPlaylistClick(playlistId: Int)
     }
 }
